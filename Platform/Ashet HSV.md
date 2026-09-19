@@ -1,6 +1,8 @@
 # Ashet HSV
 
-Ashet HSV is the platform's 8-bit color encoding for representing a practical, deterministic set of 256 colors.
+Ashet HSV is the platform's 8-bit **computable color space** for representing a practical, deterministic set of 256 colors.
+
+It is not an arbitrarily selected 256-color palette. Each byte encodes structured hue, value, and saturation information, so the encoded color index can be computed directly from quantized color components and decoded back without searching a palette.
 
 It is based on HSV-style components, but uses a modified encoding to avoid wasting large parts of the 8-bit space on duplicate blacks and grays.
 
@@ -28,6 +30,28 @@ The encoded byte value is:
 ```text
 color = hue | (value << 3) | (saturation << 6)
 ```
+
+## Computable Encoding
+
+For non-gray colors, the encoded byte is computed directly:
+
+```text
+color = hue | (value << 3) | (saturation << 6)
+```
+
+For grayscale colors, saturation is zero and the lower six bits directly encode grayscale brightness:
+
+```text
+color = gray
+```
+
+where `gray` is in the range `0..63`.
+
+This means software does not need to maintain a hand-authored 256-entry palette and perform a linear search to find the closest palette entry.
+
+Instead, a color can be quantized into Ashet HSV components and its byte value calculated directly. Likewise, the hue, value, saturation, or grayscale level can be recovered from the byte using masks and shifts.
+
+A lookup table may still be used for fast conversion from Ashet HSV to a hardware-specific output format, but such a table is an implementation optimization rather than the definition of the color space.
 
 ## Hue
 
@@ -145,7 +169,7 @@ Ashet HSV avoids both cases:
 - non-gray values map value codes 0..7 to brightness levels 1..8
 - saturation zero switches to a dedicated 6-bit grayscale encoding
 
-This yields a useful color for every possible byte value without requiring a lookup table to decode the format.
+This yields a useful color for every possible byte value while keeping the mapping algorithmic. The encoded value can be computed directly instead of locating a color through a linear search over an arbitrary palette.
 
 ## Source
 
