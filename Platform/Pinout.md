@@ -46,4 +46,5 @@ The connector uses two 32-position sides, A and B.
 - `/FAB_RESET`, `/SLOT_USB0`, `/SLOT_USB1`, `USB0_D+`, `USB0_D-`, `USB1_D+`, and `USB1_D-` are present only in the mainboard-side mapping from the sheet and are not currently part of the generic Expansion Bus signal specification.
 - Expansion pin A8 is labeled `+3V3 10K` in the sheet.
 - The expansion-facing mapping exposes `RESERVED0` through `RESERVED6`. The signal specification lists eight reserved signals in total, but the sheet does not identify an expansion-facing `RESERVED7`.
-- No interpretation beyond the sheet values is applied here.
+- `CLK` is the global 48 MHz platform clock and has a 48 MHz frequency limit.
+- `HSTX0` through `HSTX7` are bidirectional video-bus pins.
