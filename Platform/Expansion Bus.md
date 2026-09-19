@@ -95,7 +95,7 @@ From the Expansion Card's point of view, this is a complete I²C bus. The platfo
 
 All other I²C addresses are available to the Expansion Card and will not be occupied by the platform.
 
-Each Expansion Card must provide a metadata EEPROM at address `0x57`. This EEPROM must have an 8-bit memory organization with at least 8 KiB of storage and contains the *Module Descriptor Data* described further below.
+Each Expansion Card must provide a metadata EEPROM at address `0x57`. The EEPROM must provide at least 4 KiB of storage. Cards that embed an icon block must use at least an 8 KiB EEPROM. The EEPROM contains the Expansion Card metadata and low-level driver described below.
 
 The Backplane uses a PCA9547 to select the I²C bus segment belonging to a particular Expansion Card slot. Its control address is `0x77`.
 
