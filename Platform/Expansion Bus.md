@@ -49,7 +49,7 @@ In addition, `/SLOT_FUNC0` and `/SLOT_FUNC1` indicate unspecified slot-specific 
 | Signal Name    | Driver    | Type                           | Level | Count | Function                                         | Frequency Limit |
 | -------------- | --------- | ------------------------------ | ----- | ----: | ------------------------------------------------ | --------------- |
 | `/RESET`       | Backplane | Logic                          | 3.3 V |     1 | Reset signal. Driven low when the card should reset itself | 1 kHz     |
-| `CLK`          | Backplane | Logic                          | 3.3 V |     1 | Global 48 MHz clock for synchronization          | 8 MHz           |
+| `CLK`          | Backplane | Logic                          | 3.3 V |     1 | Global 48 MHz clock for synchronization          | 48 MHz          |
 | `I2C_SCL`      | Bi-di     | Open Collector                 | 3.3 V |     1 | Clock lane of the System I²C Bus                 | 400 kHz         |
 | `I2C_SDA`      | Bi-di     | Open Collector                 | 3.3 V |     1 | Data lane of the System I²C Bus                  | 400 kHz         |
 | `GP0`…`GP7`  | Bi-di     | Logic, Differential or Analog  | 3.3 V |     8 | General-purpose I/O signals from the Southbridge | 300 MHz         |
@@ -58,7 +58,7 @@ In addition, `/SLOT_FUNC0` and `/SLOT_FUNC1` indicate unspecified slot-specific 
 
 | Signal Name       | Driver | Type                  | Level | Count | Function                                                               | Frequency Limit |
 | ----------------- | ------ | --------------------- | ----- | ----: | ---------------------------------------------------------------------- | --------------- |
-| `HSTX0`…`HSTX7` | Bi-di  | Logic or Differential | 3.3 V |     8 | Uni-directional high-speed lanes. Even/odd pairs for a differential pair | 300 MHz       |
+| `HSTX0`…`HSTX7` | Bi-di  | Logic or Differential | 3.3 V |     8 | Bidirectional high-speed lanes. Even/odd pairs for a differential pair | 300 MHz       |
 
 ### Audio Signals
 
@@ -77,8 +77,6 @@ In addition, `/SLOT_FUNC0` and `/SLOT_FUNC1` indicate unspecified slot-specific 
 | `RESERVEDx` | N.C.   |     8 | Reserved for future use. Do not connect to anything. |
 
 All signals that are not power signals use nominal voltage levels between 0.0 V and 3.3 V.
-
-> **Sheet inconsistencies:** The current source sheet describes `CLK` as a “Global 48 MHz clock” while listing its frequency limit as 8 MHz. It also marks the `HSTX` driver as “Bi-di” while describing the lanes as uni-directional. Both values are preserved here pending resolution.
 
 ### Power
 
