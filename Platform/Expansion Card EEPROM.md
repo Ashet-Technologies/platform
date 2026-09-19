@@ -111,7 +111,7 @@ The checksum field is located at `0x01FC`.
 
 The checksum is calculated over the first **508 bytes** of the Metadata Block, excluding the checksum field itself.
 
-The algorithm is **CRC-32 ISO/HDLC** with the parameters documented by the source:
+The algorithm is **CRC-32 ISO/HDLC** with the following parameters:
 
 - polynomial: `0x04C11DB7`
 - initial value: `0xFFFFFFFF`
