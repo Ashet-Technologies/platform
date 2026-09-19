@@ -2,7 +2,7 @@
 
 This document specifies the Expansion Card EEPROM image based on the Ashet OS `expcard.zig` definition plus the Platform decision that the defined icon block is part of the EEPROM image.
 
-The EEPROM contains card metadata, a Propeller 2 low-level expansion driver, and the Expansion Card icon block.
+Every Expansion Card EEPROM contains card metadata and a Propeller 2 low-level expansion driver. Cards may additionally embed an Expansion Card icon block.
 
 ## Binary Encoding
 
@@ -16,20 +16,27 @@ Per the global Platform string-encoding decision, strings are UTF-8 unless a spe
 
 ## EEPROM Image
 
-The Platform EEPROM image is exactly **6144 bytes**:
+The mandatory EEPROM image is exactly **4096 bytes**:
 
 | Address Range | Size | Contents |
 | --- | ---: | --- |
 | `0x0000..0x01FF` | 512 B | Metadata block |
 | `0x0200..0x07FF` | 1536 B | Reserved, must be zero |
 | `0x0800..0x0FFF` | 2048 B | Propeller 2 low-level driver firmware |
+
+Every Expansion Card therefore requires at least a **4 KiB EEPROM**.
+
+If the card embeds icons, the EEPROM image is extended with the optional Icon Block:
+
+| Address Range | Size | Contents |
+| --- | ---: | --- |
 | `0x1000..0x17FF` | 2048 B | Expansion Card icon block |
 
-The metadata and firmware offsets and sizes follow the current source definition. The icon block corresponds to enabling the already-defined `IconBlock` field after the firmware block.
+A card with embedded icons must use at least an **8 KiB EEPROM**. The icon block itself occupies only 2048 bytes; the larger EEPROM size is the required storage device capacity when icons are present.
 
-The current source still has that field commented out and therefore asserts a 4096-byte image. The Platform specification intentionally includes it; the implementation should be updated to match this 6144-byte layout.
+Bytes `0x1800..0x1FFF` of an 8 KiB EEPROM are currently undefined by this specification.
 
-The physical Expansion Card EEPROM may be larger than this image. Bytes beyond `0x17FF` are not defined by this specification.
+The metadata and firmware offsets and sizes follow the current source definition. The icon block corresponds to enabling the already-defined `IconBlock` after the mandatory 4 KiB image.
 
 ## Metadata Block
 
@@ -135,15 +142,19 @@ It contains the Propeller 2 low-level expansion driver. The driver is loaded int
 
 The default contents of this block are all zero.
 
-## Icon Block
+## Optional Icon Block
 
-The Icon Block occupies:
+If `Has Icons` is set, the Icon Block occupies:
 
 ```
 0x1000..0x17FF
 ```
 
 and is exactly **2048 bytes**.
+
+Cards without embedded icons are not required to provide storage beyond the mandatory 4 KiB image.
+
+Cards with embedded icons must use at least an 8 KiB EEPROM.
 
 The block uses the already-defined `IconBlock` format from `expcard.zig`.
 
@@ -218,4 +229,4 @@ This specification is transposed from:
 
 `Ashet-Technologies/Ashet-OS/src/userland/libs/expcard/src/expcard.zig`
 
-The Platform specification intentionally differs from the current implementation source by including the already-defined Icon Block in the active EEPROM image. Other discrepancies should be resolved explicitly rather than inferred.
+The Platform specification intentionally differs from the current implementation source by defining the already-declared Icon Block as an optional extension of the mandatory 4 KiB EEPROM image. Other discrepancies should be resolved explicitly rather than inferred.
