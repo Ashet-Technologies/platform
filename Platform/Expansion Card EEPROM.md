@@ -160,7 +160,7 @@ Cards with embedded icons must use at least an 8 KiB EEPROM.
 
 Each icon uses one byte per pixel.
 
-Pixel values are encoded directly in the **Ashet HSV** 8-bit color format. The exact Ashet HSV encoding is defined separately and is currently TBD.
+Pixel values are encoded directly in the **Ashet HSV** 8-bit color format defined in [Ashet HSV.md](Ashet%20HSV.md).
 
 There is no per-icon or shared palette in the EEPROM image.
 
