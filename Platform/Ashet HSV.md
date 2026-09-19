@@ -69,14 +69,12 @@ This avoids producing 64 duplicate black encodings.
 
 The 2-bit saturation field has four values:
 
-| Saturation | Meaning |
-| ---: | --- |
-| 0 | Gray encoding mode |
-| 1 | Low saturation |
-| 2 | Medium saturation |
-| 3 | Fully saturated |
-
-The source defines saturation 3 as fully saturated, but does not assign explicit percentage values to saturation levels 1 and 2.
+| Saturation | Meaning | Saturation Level |
+| ---: | --- | ---: |
+| 0 | Gray encoding mode | 0% / grayscale |
+| 1 | Low saturation | 33% |
+| 2 | Medium saturation | 66% |
+| 3 | Fully saturated | 100% |
 
 ## Gray Encoding
 
