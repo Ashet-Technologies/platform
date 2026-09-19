@@ -170,13 +170,3 @@ Ashet HSV avoids both cases:
 - saturation zero switches to a dedicated 6-bit grayscale encoding
 
 This yields a useful color for every possible byte value while keeping the mapping algorithmic. The encoded value can be computed directly instead of locating a color through a linear search over an arbitrary palette.
-
-## Source
-
-This specification is derived from the Ashet OS ABI definition at commit:
-
-`fe3d78bc086899e5ba063807e40d6c4ac738b25d`
-
-specifically the `Color : u8` definition in `src/abi/src/ashet.abi`.
-
-The 32-bit color formats declared alongside `Color` are intentionally outside the scope of this specification.
