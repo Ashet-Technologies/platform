@@ -97,8 +97,6 @@ Compatibility behavior for versions other than 1 is not yet specified.
 | 17 | Has Icons | Card provides an icon block |
 | 18..31 | Reserved | Must be zero |
 
-Bit 2 was historically used for `Requires USB` and is now reserved.
-
 ## Driver Interface
 
 `Driver Interface` is a 32-bit identifier for a platform-standard low-level driver interface.
