@@ -156,72 +156,52 @@ Cards without embedded icons are not required to provide storage beyond the mand
 
 Cards with embedded icons must use at least an 8 KiB EEPROM.
 
-The block uses the already-defined `IconBlock` format from `expcard.zig`.
+### Pixel Format
+
+Each icon uses one byte per pixel.
+
+Pixel values are encoded directly in the **Ashet HSV** 8-bit color format. The exact Ashet HSV encoding is defined separately and is currently TBD.
+
+There is no per-icon or shared palette in the EEPROM image.
 
 ### Layout
 
 | Block Offset | EEPROM Address | Size | Contents |
 | ---: | ---: | ---: | --- |
-| `0x0000` | `0x1000` | 256 B | 16×16 pixel indices |
-| `0x0100` | `0x1100` | 576 B | 24×24 pixel indices |
-| `0x0340` | `0x1340` | 1024 B | 32×32 pixel indices |
-| `0x0740` | `0x1740` | 1 B | 16×16 icon configuration |
-| `0x0741` | `0x1741` | 1 B | 24×24 icon configuration |
-| `0x0742` | `0x1742` | 1 B | 32×32 icon configuration |
-| `0x0743` | `0x1743` | 189 B | 63-entry RGB palette |
+| `0x0000` | `0x1000` | 256 B | 16×16 8 bpp pixel data |
+| `0x0100` | `0x1100` | 576 B | 24×24 8 bpp pixel data |
+| `0x0340` | `0x1340` | 1024 B | 32×32 8 bpp pixel data |
+| `0x0740` | `0x1740` | 2 B | 16×16 icon configuration |
+| `0x0742` | `0x1742` | 2 B | 24×24 icon configuration |
+| `0x0744` | `0x1744` | 2 B | 32×32 icon configuration |
+| `0x0746..0x07FF` | `0x1746..0x17FF` | 186 B | Reserved for future use |
 
-Each pixel is one byte.
-
-The source explicitly defines pixel value `0` as transparent. Its comment describing the exact meaning of values `1..63` is incomplete, so this specification does not add semantics beyond that.
+The reserved bytes are currently unused and should be written as zero.
 
 ### Icon Configuration
 
-Each icon has a one-byte packed configuration:
+Each icon has a two-byte configuration structure:
 
-| Bits | Field | Meaning |
+```zig
+config: packed struct(u8) {
+    is_transparent: bool,
+    _padding: u6,
+    enabled: bool,
+},
+transparent: u8,
+```
+
+The first byte is packed least-significant-bit first:
+
+| Bit | Field | Meaning |
 | ---: | --- | --- |
-| 0..5 | Color Count | Number of colors used by the icon |
-| 6..7 | Reserved | Must be zero |
+| 0 | `is_transparent` | Enables transparent-pixel handling |
+| 1..6 | Reserved | Must be zero |
+| 7 | `enabled` | Enables this icon size |
 
-A color count of zero disables the icon.
+The second byte, `transparent`, contains the 8-bit pixel value that is treated as transparent when `is_transparent` is set.
 
-### Palette
-
-The shared palette contains **63 entries**.
-
-Each palette entry is an 8-bit-per-channel sRGB triplet:
-
-```
-R, G, B
-```
-
-for a total of three bytes per entry.
-
-## JSON Metadata Input
-
-The source also defines a JSON representation used to construct a Metadata Block.
-
-The accepted fields are:
-
-| Field | Type | Required |
-| --- | --- | --- |
-| Vendor ID | `u32` | yes |
-| Product ID | `u32` | yes |
-| Properties | Properties | yes |
-| Driver Interface | DriverInterface | yes |
-| Driver Specific Data | string | no; defaults to empty |
-| Vendor Name | string | yes |
-| Product Name | string | yes |
-| Serial Number | string | yes |
-
-When converting this representation into the binary Metadata Block:
-
-- unknown JSON fields are rejected
-- duplicate fields are rejected
-- strings that exceed their fixed field size are rejected
-- the fixed Magic Number and Version come from the binary structure defaults
-- reserved fields are zero-filled
-- the CRC32 checksum is computed automatically
+If `enabled` is clear, that icon size is not present.
 
 ## Source
 
@@ -229,4 +209,4 @@ This specification is transposed from:
 
 `Ashet-Technologies/Ashet-OS/src/userland/libs/expcard/src/expcard.zig`
 
-The Platform specification intentionally differs from the current implementation source by defining the already-declared Icon Block as an optional extension of the mandatory 4 KiB EEPROM image. Other discrepancies should be resolved explicitly rather than inferred.
+The Platform specification intentionally differs from the current implementation source in the optional Icon Block layout: it uses direct 8 bpp Ashet HSV pixels, per-icon transparency configuration, and no palette. Other discrepancies should be resolved explicitly rather than inferred.
