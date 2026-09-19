@@ -1,8 +1,10 @@
 # Ashet Platform Pinout
 
-This document mirrors the current `Pin Out` sheet from the **Ashet Home Computer Design** spreadsheet.
+This document defines the Mainboard-facing and Expansion-facing connector pin allocation.
 
 The connector uses two 32-position sides, A and B.
+
+The Mainboard↔Backplane logical and electrical interface beyond this pin allocation is not yet specified.
 
 ## Mainboard- and Expansion-Facing Mapping
 
@@ -50,10 +52,12 @@ A8 is a dual-function pin whose bias depends on the slot role:
 
 This allows a Mainboard to detect whether it is installed in a Mainboard slot or in an Expansion Card slot. A Mainboard that supports this capability may switch into **Not-so-mainboard** mode when installed in an Expansion Card slot, allowing it to operate as a coprocessor and accept commands or tasks from the host system.
 
+The exact Not-so-mainboard operating mode and protocol are not yet specified.
+
 ## Notes
 
-- `/FAB_RESET`, `/SLOT_USB0`, `/SLOT_USB1`, `USB0_D+`, `USB0_D-`, `USB1_D+`, and `USB1_D-` are present only in the mainboard-side mapping from the sheet and are not currently part of the generic Expansion Bus signal specification.
+- `/FAB_RESET`, `/SLOT_USB0`, `/SLOT_USB1`, `USB0_D+`, `USB0_D-`, `USB1_D+`, and `USB1_D-` are present only in the Mainboard-facing mapping and are not part of the generic Expansion Bus signal specification.
 - `/FAB_RESET` is pulled down by default with a 10 kΩ resistor.
-- The expansion-facing mapping exposes `RESERVED0` through `RESERVED6`. The signal specification lists eight reserved signals in total, but the sheet does not identify an expansion-facing `RESERVED7`.
+- The Expansion-facing mapping exposes seven reserved signals: `RESERVED0` through `RESERVED6`.
 - `CLK` is the global 48 MHz platform clock and has a 48 MHz frequency limit.
 - `HSTX0` through `HSTX7` are bidirectional video-bus pins.
