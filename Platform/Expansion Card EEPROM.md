@@ -1,8 +1,8 @@
 # Expansion Card EEPROM Format
 
-This document specifies the Expansion Card EEPROM image derived from the current Ashet OS `expcard.zig` definition.
+This document specifies the Expansion Card EEPROM image based on the Ashet OS `expcard.zig` definition plus the Platform decision that the defined icon block is part of the EEPROM image.
 
-The EEPROM contains card metadata and, optionally, a Propeller 2 low-level expansion driver. The source also defines an icon block format, but that icon block is **not currently part of the active EEPROM image layout**.
+The EEPROM contains card metadata, a Propeller 2 low-level expansion driver, and the Expansion Card icon block.
 
 ## Binary Encoding
 
@@ -10,27 +10,26 @@ The implementation serializes the metadata structure in **little-endian** byte o
 
 Reserved bytes and reserved bits are defined as zero.
 
-Fixed-size strings are null-padded byte arrays. Their logical value ends at the first zero byte, or at the end of the array if no zero byte is present. The source does not define a character encoding for these strings.
+Fixed-size strings are UTF-8 encoded, null-padded byte arrays. Their logical value ends at the first zero byte, or at the end of the array if no zero byte is present.
+
+Per the global Platform string-encoding decision, strings are UTF-8 unless a specification explicitly states otherwise.
 
 ## EEPROM Image
 
-The active EEPROM image is exactly **4096 bytes**:
+The Platform EEPROM image is exactly **6144 bytes**:
 
 | Address Range | Size | Contents |
 | --- | ---: | --- |
 | `0x0000..0x01FF` | 512 B | Metadata block |
 | `0x0200..0x07FF` | 1536 B | Reserved, must be zero |
 | `0x0800..0x0FFF` | 2048 B | Propeller 2 low-level driver firmware |
+| `0x1000..0x17FF` | 2048 B | Expansion Card icon block |
 
-The source asserts:
+The metadata and firmware offsets and sizes follow the current source definition. The icon block corresponds to enabling the already-defined `IconBlock` field after the firmware block.
 
-- EEPROM image size: 4096 bytes
-- metadata offset: `0x0000`
-- firmware offset: `0x0800`
-- metadata size: 512 bytes
-- firmware size: 2048 bytes
+The current source still has that field commented out and therefore asserts a 4096-byte image. The Platform specification intentionally includes it; the implementation should be updated to match this 6144-byte layout.
 
-The physical Expansion Card EEPROM may be larger than this image. Bytes beyond `0x0FFF` are not defined by this source.
+The physical Expansion Card EEPROM may be larger than this image. Bytes beyond `0x17FF` are not defined by this specification.
 
 ## Metadata Block
 
@@ -136,23 +135,29 @@ It contains the Propeller 2 low-level expansion driver. The driver is loaded int
 
 The default contents of this block are all zero.
 
-## Icon Block Format
+## Icon Block
 
-The source defines an `IconBlock` type with a total size of **2048 bytes**, but the field that would place this block into the EEPROM image is currently commented out.
+The Icon Block occupies:
 
-Therefore, the following describes the defined icon binary format, **not an active EEPROM storage location**.
+```
+0x1000..0x17FF
+```
+
+and is exactly **2048 bytes**.
+
+The block uses the already-defined `IconBlock` format from `expcard.zig`.
 
 ### Layout
 
-| Offset | Size | Contents |
-| ---: | ---: | --- |
-| `0x0000` | 256 B | 16×16 pixel indices |
-| `0x0100` | 576 B | 24×24 pixel indices |
-| `0x0340` | 1024 B | 32×32 pixel indices |
-| `0x0740` | 1 B | 16×16 icon configuration |
-| `0x0741` | 1 B | 24×24 icon configuration |
-| `0x0742` | 1 B | 32×32 icon configuration |
-| `0x0743` | 189 B | 63-entry RGB palette |
+| Block Offset | EEPROM Address | Size | Contents |
+| ---: | ---: | ---: | --- |
+| `0x0000` | `0x1000` | 256 B | 16×16 pixel indices |
+| `0x0100` | `0x1100` | 576 B | 24×24 pixel indices |
+| `0x0340` | `0x1340` | 1024 B | 32×32 pixel indices |
+| `0x0740` | `0x1740` | 1 B | 16×16 icon configuration |
+| `0x0741` | `0x1741` | 1 B | 24×24 icon configuration |
+| `0x0742` | `0x1742` | 1 B | 32×32 icon configuration |
+| `0x0743` | `0x1743` | 189 B | 63-entry RGB palette |
 
 Each pixel is one byte.
 
@@ -213,4 +218,4 @@ This specification is transposed from:
 
 `Ashet-Technologies/Ashet-OS/src/userland/libs/expcard/src/expcard.zig`
 
-Where this document and the implementation disagree, the discrepancy should be resolved explicitly rather than inferred.
+The Platform specification intentionally differs from the current implementation source by including the already-defined Icon Block in the active EEPROM image. Other discrepancies should be resolved explicitly rather than inferred.
