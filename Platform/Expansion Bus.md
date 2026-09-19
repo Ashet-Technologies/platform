@@ -84,22 +84,22 @@ The current signal specification defines 3.3 V, 5 V and 12 V supplies at 500 mA 
 
 ### I²C
 
-The I²C bus is specified for operation up to 400 kHz and must have at least a standard EEPROM connected.
+Each Expansion Card slot provides its own I²C bus segment, specified for operation up to 400 kHz.
 
-This EEPROM must have at an 8-bit memory organization with at least 8K of memory. It contains the *Module Descriptor Data* described further below.
+From the Expansion Card's point of view, this is a complete I²C bus. The platform reserves only the following addresses in addition to addresses reserved by the I²C specification itself:
 
-The following addresses are reserved on the bus in addition to the specification:
+| Address | Use                     |
+| ------: | ----------------------- |
+|    0x57 | Metadata EEPROM         |
+|    0x77 | PCA9547 I²C multiplexer |
 
-| Address | Use                  |
-| ------: | -------------------- |
-|    0x57 | Metadata EEPROM      |
-|    0x70 | Backplane I²C Switch |
+All other I²C addresses are available to the Expansion Card and will not be occupied by the platform.
 
-All other addresses on the I²C bus are available to the expansion card and will not be occupied by the host system.
+Each Expansion Card must provide a metadata EEPROM at address `0x57`. This EEPROM must have an 8-bit memory organization with at least 8 KiB of storage and contains the *Module Descriptor Data* described further below.
 
-> **LORE:**
-> The *Metadata EEPROM* uses the address `0x57` instead of `0x50`, as `0x50` is the default for EEPROMs and these might already be taken by other
-> EEPROM systems like the [DDC](https://en.wikipedia.org/wiki/Display_Data_Channel) [EDID](https://en.wikipedia.org/wiki/Extended_Display_Identification_Data) EEPROM.
+The Backplane uses a PCA9547 to select the I²C bus segment belonging to a particular Expansion Card slot. Its control address is `0x77`.
+
+The architectural rationale for the per-slot I²C topology and the selected reserved addresses is documented in [Decisions](Decisions/).
 
 ### General Purpose I/O
 
