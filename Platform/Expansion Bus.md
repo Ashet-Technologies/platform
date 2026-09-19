@@ -127,9 +127,9 @@ It is only available on slots with the *Audio* signal set.
 
 ### High Speed Lanes
 
-> TO BE DONE
+The high-speed lanes are only available on slots with the *Video* signal set.
 
-The high speed lanes are only available on slots with the *Video* signal set.
+The detailed high-speed lane protocol and electrical behavior beyond the constraints listed above are not yet specified.
 
 ## Connector
 
@@ -139,7 +139,7 @@ The *Expansion Bus* uses a standard *PCI Express x4* connector with 64 positions
 
 ### Pinout
 
-This table is the expansion-card-facing pinout from the current *Pin Out* sheet. See [Pinout.md](Pinout.md) for both mainboard-facing and expansion-card-facing mappings.
+This table defines the Expansion Card-facing pinout. See [Pinout.md](Pinout.md) for both Mainboard-facing and Expansion Card-facing mappings.
 
 | Pin | A Side       | B Side        |
 | --: | ------------ | ------------- |
