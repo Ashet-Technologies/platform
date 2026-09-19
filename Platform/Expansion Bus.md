@@ -95,7 +95,7 @@ From the Expansion Card's point of view, this is a complete I²C bus. The platfo
 
 All other I²C addresses are available to the Expansion Card and will not be occupied by the platform.
 
-Each Expansion Card must provide a metadata EEPROM at address `0x57`. This EEPROM must have an 8-bit memory organization with at least 8 KiB of storage and contains the *Module Descriptor Data* described further below.
+Each Expansion Card must provide a metadata EEPROM at address `0x57`. The EEPROM must provide at least 4 KiB of storage. Cards that embed an icon block must use at least an 8 KiB EEPROM. The EEPROM contains the Expansion Card metadata and low-level driver described below.
 
 The Backplane uses a PCA9547 to select the I²C bus segment belonging to a particular Expansion Card slot. Its control address is `0x77`.
 
@@ -174,78 +174,7 @@ This table is the expansion-card-facing pinout from the current *Pin Out* sheet.
 
 The source sheet labels A8 as `+3V3 10K`. It names only `RESERVED0` through `RESERVED6` in the expansion-card-facing pinout even though the signal specification lists eight reserved signals; this document does not infer a missing `RESERVED7`.
 
-## Module Descriptor Data
+## Expansion Card EEPROM
 
-The Module Descriptor Data describes the expansion card and provides a low-level driver for the southbridge.
+The Expansion Card EEPROM binary format, metadata block, checksum, firmware block, and currently-defined icon format are specified in [Expansion Card EEPROM.md](Expansion%20Card%20EEPROM.md).
 
-### Memory Map
-
-The data is located at the start of the EEPROM and follows the following memory layout:
-
-| Address Range  | Function                |
-| -------------- | ----------------------- |
-| `0000`..`01FF` | Metadata Block          |
-| `0200`..`07FF` | *reserved*              |
-| `0800`..`0FFF` | Module Card Icon        |
-| `1000`..`1FFF` | Low Level Driver Binary |
-
-### Metadata Block
-
-The metadata block encodes generic information about the expansion card that can be processed by the host system.
-
-| Offset | Field             | Type     | Function                                                |
-| ------ | ----------------- | -------- | ------------------------------------------------------- |
-| `0000` | Vendor ID         | `u32`    | Unique ID for the vendor of the expansion card          |
-| `0004` | Product ID        | `u32`    | Vendor-unique ID for the expansion card                 |
-| `0008` | Serial Number     | `[8]u8`  | Serial number of the expansion card. Can be zero-padded |
-| `0018` |                   |          | *padding*                                               |
-| `0020` | Required Features | `u8`     | Bitmask of which expansion slot features are required   |
-| `0021` |                   |          | *padding*                                               |
-| `0024` | Driver Interface  | `u32`    | Type of driver interface this expansion card uses       |
-| `0028` |                   |          | *padding*                                               |
-| `0030` | Driver Specific   | `[16]u8` |                                                         |
-| `0040` |                   |          | *padding*                                               |
-| `0100` | Vendor Name       | `[64]u8` | UTF-8 encoded vendor name                               |
-| `0140` | Product Name      | `[64]u8` | UTF-8 encoded product name                              |
-| `0180` |                   |          | *padding*                                               |
-
-### Module Card Icon
-
-Each module card may embed an icon so a host os can show the user a nice visual representation.
-
-As the resolution of the host system is not known, up to three icon sizes can be embedded:
-
-- 16x16
-- 24x24
-- 32x32
-
-All icons share the same color palette, which can have up to 63 colors and a transparency key.
-
-The icon memory block is organized as such:
-
-| Address Range  | Function                                    |
-| -------------- | ------------------------------------------- |
-| `0000`..`00FF` | 8-bit pixel data for 16x16 icon             |
-| `0100`..`04FF` | 8-bit pixel data for 32x32 icon             |
-| `0500`..`0BFF` | 8-bit pixel data for 24x24 icon             |
-| `0740`         | 16x16 icon Configuration Field              |
-| `0741`         | 32x32 icon Configuration Field              |
-| `0742`         | 24x24 icon Configuration Field              |
-| `0743`..`07FF` | 63-entry palette with \[R,G,B] color values |
-
-Each *Configuration Field* is a bit field with the following items:
-
-|  Bit | Function                                               |
-| ---: | ------------------------------------------------------ |
-| 0..5 | Number of palette entries. Zero means icon is disabled |
-| 6..7 | *reserved, must be zero*                               |
-
-An icon is present if it has more than zero colors in its palette.
-
-The pixel data contains row-major organized indices into the palette using 0...62 as defined by the palette table, and 63 as the transparency key. On load, the uppermost two bits may be discarded, truncating the 8-bit index to 6 bits.
-
-### Low Level Driver
-
-The low level driver is a Propeller 2 binary which is loaded into one of the cogs of the southbridge.
-
-> TO BE DONE
