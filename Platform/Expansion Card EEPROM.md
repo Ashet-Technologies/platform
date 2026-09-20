@@ -6,7 +6,7 @@ Every Expansion Card EEPROM contains card metadata. A card may additionally embe
 
 ## Binary Encoding
 
-The implementation serializes the metadata structure in **little-endian** byte order.
+All integer fields in the EEPROM format are serialized in **little-endian** byte order.
 
 Reserved bytes and reserved bits are defined as zero.
 
@@ -133,6 +133,8 @@ The Firmware Block occupies:
 and is exactly **2048 bytes**.
 
 When `Has Firmware` is set, this block contains the card-specific Propeller 2 low-level expansion driver. The driver is loaded into the Cog corresponding to the Expansion Card and forms the low-level interface between the host system and the card.
+
+GP lane policy is defined by this Low-Level-Driver rather than by separate per-pin metadata fields.
 
 When `Has Firmware` is clear, the block is ignored and the card may use a platform-standard `Driver Interface` instead. Standard driver interfaces are not yet specified.
 
