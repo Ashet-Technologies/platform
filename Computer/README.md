@@ -64,7 +64,7 @@ Expansion Cards provide user-selectable features. The designated card set for th
 
 - DVI video output
 - default mode: 640×400
-- 8 bits per pixel
+- 8 bpp [Ashet HSV](../Platform/Ashet%20HSV.md)
 - 60 Hz
 
 ### PCM Sound Card

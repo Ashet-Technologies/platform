@@ -1,8 +1,8 @@
 # Expansion Card EEPROM Format
 
-This document specifies the Expansion Card EEPROM image based on the Ashet OS `expcard.zig` definition plus the Platform decision that the defined icon block is part of the EEPROM image.
+This document specifies the binary format of the Expansion Card EEPROM.
 
-Every Expansion Card EEPROM contains card metadata and a Propeller 2 low-level expansion driver. Cards may additionally embed an Expansion Card icon block.
+Every Expansion Card EEPROM contains card metadata. A card may additionally embed a Propeller 2 low-level driver and an Expansion Card icon block.
 
 ## Binary Encoding
 
@@ -22,9 +22,11 @@ The mandatory EEPROM image is exactly **4096 bytes**:
 | --- | ---: | --- |
 | `0x0000..0x01FF` | 512 B | Metadata block |
 | `0x0200..0x07FF` | 1536 B | Reserved, must be zero |
-| `0x0800..0x0FFF` | 2048 B | Propeller 2 low-level driver firmware |
+| `0x0800..0x0FFF` | 2048 B | Optional Propeller 2 low-level driver; ignored when absent |
 
 Every Expansion Card therefore requires at least a **4 KiB EEPROM**.
+
+If `Has Firmware` is set, the region at `0x0800..0x0FFF` contains a card-specific Propeller 2 low-level driver. If `Has Firmware` is clear, that region is ignored and the card may instead select a platform-standard driver through `Driver Interface`.
 
 If the card embeds icons, the EEPROM image is extended with the optional Icon Block:
 
@@ -36,7 +38,6 @@ A card with embedded icons must use at least an **8 KiB EEPROM**. The icon block
 
 Bytes `0x1800..0x1FFF` of an 8 KiB EEPROM are currently undefined by this specification.
 
-The metadata and firmware offsets and sizes follow the current source definition. The icon block corresponds to enabling the already-defined `IconBlock` after the mandatory 4 KiB image.
 
 ## Metadata Block
 
@@ -69,7 +70,7 @@ The Magic Number is:
 
 This value encodes the Propeller 2 instruction `JNPAT #-1`.
 
-The source deliberately uses this instruction as protection against EEPROMs that are too small. Such EEPROMs may wrap a read from address `0x0800` back to address zero, causing the metadata block to be loaded as Propeller 2 code.
+The value is chosen as protection against EEPROMs that are too small. Such EEPROMs may wrap a read from address `0x0800` back to address zero, causing the metadata block to be loaded as Propeller 2 code.
 
 If that happens, the first word executes as an unusual endless loop instead of allowing the Cog to continue executing arbitrary metadata bytes as instructions.
 
@@ -81,7 +82,7 @@ The only metadata version currently defined is:
 Version = 1
 ```
 
-The source does not define compatibility behavior for other versions.
+Compatibility behavior for versions other than 1 is not yet specified.
 
 ## Properties
 
@@ -91,25 +92,18 @@ The source does not define compatibility behavior for other versions.
 | ---: | --- | --- |
 | 0 | Requires Audio | Card requires an Audio-capable slot |
 | 1 | Requires Video | Card requires a Video-capable slot |
-| 2 | Requires USB | Card requires USB |
-| 3..15 | Reserved | Must be zero |
-| 16 | Has Firmware | Card provides a firmware block |
-| 17 | Has Icons | Card provides icons |
+| 2..15 | Reserved | Must be zero |
+| 16 | Has Firmware | Card provides a card-specific low-level driver |
+| 17 | Has Icons | Card provides an icon block |
 | 18..31 | Reserved | Must be zero |
-
-`Has Firmware` and `Has Icons` default to false in the source definition.
 
 ## Driver Interface
 
-`Driver Interface` is a 32-bit enumeration.
+`Driver Interface` is a 32-bit identifier for a platform-standard low-level driver interface.
 
-The only value currently assigned by the source is:
+A card that does not embed card-specific firmware may use this field to select a standard driver interface instead. Standard driver-interface identifiers and their behavior are not yet specified.
 
-| Value | Name |
-| ---: | --- |
-| `0` | `none` |
-
-The source permits additional numeric values, but does not define their semantics.
+The value `0` is currently named `none`.
 
 ## CRC32 Checksum
 
@@ -117,7 +111,7 @@ The checksum field is located at `0x01FC`.
 
 The checksum is calculated over the first **508 bytes** of the Metadata Block, excluding the checksum field itself.
 
-The algorithm is **CRC-32 ISO/HDLC** with the parameters documented by the source:
+The algorithm is **CRC-32 ISO/HDLC** with the following parameters:
 
 - polynomial: `0x04C11DB7`
 - initial value: `0xFFFFFFFF`
@@ -128,7 +122,7 @@ The algorithm is **CRC-32 ISO/HDLC** with the parameters documented by the sourc
 
 The resulting 32-bit checksum is stored in the `CRC32 Checksum` field.
 
-## Firmware Block
+## Optional Firmware Block
 
 The Firmware Block occupies:
 
@@ -138,9 +132,9 @@ The Firmware Block occupies:
 
 and is exactly **2048 bytes**.
 
-It contains the Propeller 2 low-level expansion driver. The driver is loaded into the Cog corresponding to the Expansion Card and forms the low-level interface between the host system and the card.
+When `Has Firmware` is set, this block contains the card-specific Propeller 2 low-level expansion driver. The driver is loaded into the Cog corresponding to the Expansion Card and forms the low-level interface between the host system and the card.
 
-The default contents of this block are all zero.
+When `Has Firmware` is clear, the block is ignored and the card may use a platform-standard `Driver Interface` instead. Standard driver interfaces are not yet specified.
 
 ## Optional Icon Block
 
@@ -176,7 +170,6 @@ There is no per-icon or shared palette in the EEPROM image.
 | `0x0744` | `0x1744` | 2 B | 32×32 icon configuration |
 | `0x0746..0x07FF` | `0x1746..0x17FF` | 186 B | Reserved for future use |
 
-The reserved bytes are currently unused and should be written as zero.
 
 ### Icon Configuration
 
@@ -202,11 +195,3 @@ The first byte is packed least-significant-bit first:
 The second byte, `transparent`, contains the 8-bit pixel value that is treated as transparent when `is_transparent` is set.
 
 If `enabled` is clear, that icon size is not present.
-
-## Source
-
-This specification is transposed from:
-
-`Ashet-Technologies/Ashet-OS/src/userland/libs/expcard/src/expcard.zig`
-
-The Platform specification intentionally differs from the current implementation source in the optional Icon Block layout: it uses direct 8 bpp Ashet HSV pixels, per-icon transparency configuration, and no palette. Other discrepancies should be resolved explicitly rather than inferred.

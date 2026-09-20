@@ -4,7 +4,7 @@ The Ashet *Expansion Bus* is the core component of the composability of the Ashe
 
 ## Overview
 
-- Hot Swappable
+- Optional hot-swap support
 - Power Supply
   - 12 V, 500 mA
   - 5 V, 500 mA
@@ -74,13 +74,17 @@ In addition, `/SLOT_FUNC0` and `/SLOT_FUNC1` indicate unspecified slot-specific 
 
 | Signal Name | Driver | Count | Function                                        |
 | ----------- | ------ | ----: | ----------------------------------------------- |
-| `RESERVEDx` | N.C.   |     8 | Reserved for future use. Do not connect to anything. |
+| `RESERVEDx` | N.C.   |     7 | Reserved for future use. Do not connect to anything. |
 
 All signals that are not power signals use nominal voltage levels between 0.0 V and 3.3 V.
 
 ### Power
 
-The current signal specification defines 3.3 V, 5 V and 12 V supplies at 500 mA each. Further electrical requirements such as tolerances, sequencing and inrush limits are not specified by the source sheet.
+The Expansion Bus defines 3.3 V, 5 V and 12 V supplies at 500 mA each. Further electrical requirements such as tolerances, sequencing and inrush limits are not yet specified.
+
+### Hot Swap
+
+An implementation may support hot-swapping Expansion Cards, but hot-swap support is not required for platform compatibility. Hot-swap sequencing and electrical behavior are not yet specified.
 
 ### I²C
 
@@ -95,7 +99,7 @@ From the Expansion Card's point of view, this is a complete I²C bus. The platfo
 
 All other I²C addresses are available to the Expansion Card and will not be occupied by the platform.
 
-Each Expansion Card must provide a metadata EEPROM at address `0x57`. The EEPROM must provide at least 4 KiB of storage. Cards that embed an icon block must use at least an 8 KiB EEPROM. The EEPROM contains the Expansion Card metadata and low-level driver described below.
+Each Expansion Card must provide a metadata EEPROM at address `0x57`. The EEPROM must provide at least 4 KiB of storage. Cards that embed an icon block must use at least an 8 KiB EEPROM. The EEPROM contains the Expansion Card metadata and may contain a card-specific low-level driver.
 
 The Backplane uses a PCA9547 to select the I²C bus segment belonging to a particular Expansion Card slot. Its control address is `0x77`.
 
@@ -107,7 +111,7 @@ These signals will have a card-specific function and are driven by either the ca
 
 They can be logic, differential or analog signals, as long as they stay in the nominal voltage range.
 
-Each expansion card will have to ship a low level driver which provides the southbridge configuration for these I/Os. See *Module Descriptor Data* for more information.
+An Expansion Card may ship a card-specific low-level driver that configures these I/Os, or use a platform-standard driver interface. See [Expansion Card EEPROM.md](Expansion%20Card%20EEPROM.md).
 
 ### I²S
 
@@ -123,9 +127,9 @@ It is only available on slots with the *Audio* signal set.
 
 ### High Speed Lanes
 
-> TO BE DONE
+The high-speed lanes are only available on slots with the *Video* signal set.
 
-The high speed lanes are only available on slots with the *Video* signal set.
+The detailed high-speed lane protocol and electrical behavior beyond the constraints listed above are not yet specified.
 
 ## Connector
 
@@ -135,7 +139,7 @@ The *Expansion Bus* uses a standard *PCI Express x4* connector with 64 positions
 
 ### Pinout
 
-This table is the expansion-card-facing pinout from the current *Pin Out* sheet. See [Pinout.md](Pinout.md) for both mainboard-facing and expansion-card-facing mappings.
+This table defines the Expansion Card-facing pinout. See [Pinout.md](Pinout.md) for both Mainboard-facing and Expansion Card-facing mappings.
 
 | Pin | A Side       | B Side        |
 | --: | ------------ | ------------- |
@@ -172,9 +176,9 @@ This table is the expansion-card-facing pinout from the current *Pin Out* sheet.
 |  31 | I2S_MCLK     | RESERVED6     |
 |  32 | GND          | GND           |
 
-The source sheet labels A8 as `+3V3 10K`. It names only `RESERVED0` through `RESERVED6` in the expansion-card-facing pinout even though the signal specification lists eight reserved signals; this document does not infer a missing `RESERVED7`.
+Expansion-facing A8 is pulled up to `+3V3` through 10 kΩ. See [Pinout.md](Pinout.md) for its dual-function Mainboard/Expansion behavior.
 
 ## Expansion Card EEPROM
 
-The Expansion Card EEPROM binary format, metadata block, checksum, firmware block, and currently-defined icon format are specified in [Expansion Card EEPROM.md](Expansion%20Card%20EEPROM.md).
+The Expansion Card EEPROM binary format, metadata block, optional low-level driver, checksum, and optional icon format are specified in [Expansion Card EEPROM.md](Expansion%20Card%20EEPROM.md).
 

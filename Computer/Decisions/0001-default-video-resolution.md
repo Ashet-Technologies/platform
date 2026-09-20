@@ -27,5 +27,5 @@ A complete 640×400 framebuffer therefore requires **256,000 B**, leaving **6,14
 ## Consequences
 
 - A complete default-resolution framebuffer can fit inside half of RP2350 SRAM.
-- The default video mode uses 8 bpp indexed pixels.
+- The default video mode uses 8 bpp [Ashet HSV](../../Platform/Ashet%20HSV.md) pixels.
 - Higher resolutions at 8 bpp require more than the 256 KiB framebuffer budget.
