@@ -37,8 +37,11 @@ The HSTX interface model and standard interface classes are defined, but the exa
 Interfaces requiring definitions include:
 
 - DVI
+- QSPI
+- QPI
 - MIPI-DSI, 1 lane
 - MIPI-DSI, 2 lanes
+- MIPI-CSI
 
 The Custom and Unused interface semantics are already defined at a high level.
 
@@ -117,6 +120,8 @@ Still to define:
 ### Audio Lane Generalization
 
 The current Audio lane group has I²S-oriented signals and newly-defined Audio profiles, including quad-input/output and SPI-like modes.
+
+The current fixed `I2S_SDIN` / `I2S_SDOUT` direction assignments are sufficient for bidirectional stereo, but do not directly represent the quad-input, quad-output, and SPI-like profiles. The generalized ownership/direction model must resolve this.
 
 Still to define:
 
