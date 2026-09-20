@@ -27,9 +27,23 @@ Each feature might require a certain set of signals to be present:
 | Audio    | ✅                | ❌             | ✅             |
 | Video    | ✅                | ✅             | ❌             |
 
-In addition, `/SLOT_FUNC0` and `/SLOT_FUNC1` indicate unspecified slot-specific features. A feature signal is connected to GND when that feature is available.
+In addition, `/SLOT_FUNC0` and `/SLOT_FUNC1` indicate unspecified slot-specific features.
+
+The slot feature straps `/SLOT_AUDIO`, `/SLOT_VIDEO`, `/SLOT_FUNC0`, and `/SLOT_FUNC1` are passive Backplane signals:
+
+- a supported feature is indicated by a hard 0 Ω connection to GND
+- an unsupported feature is left unconnected
+- strap state must not depend on slot power
+- a card that needs a defined level for an unconnected strap should provide its own pull-up
+
+A card may sample these straps at any time.
 
 ## Signals
+
+Signal names prefixed with `/` are active-low.
+
+Unless specified otherwise, signal voltages are referenced to GND and must remain within 0.0 V to 3.3 V.
+
 
 ### Power and Configuration
 
@@ -39,7 +53,7 @@ In addition, `/SLOT_FUNC0` and `/SLOT_FUNC1` indicate unspecified slot-specific 
 | `+3V3`          | Backplane | Power  | 3.3 V |     2 | 3.3 V, 500 mA Power Supply                                                  | -               |
 | `+5V`           | Backplane | Power  | 5 V   |     2 | 5 V, 500 mA Power Supply                                                    | -               |
 | `+12V`          | Backplane | Power  | 12 V  |     2 | 12 V, 500 mA Power Supply                                                   | -               |
-| `/PRESENT`      | Card      | Static | 0 V   |     1 | Presence detection. Must be tied to ground on the expansion card            | -               |
+| `/PRESENT`      | Card      | Static | 0 V   |     1 | Presence detection. Must be tied to GND through 0 Ω on the Expansion Card   | -               |
 | `/SLOT_AUDIO`   | Backplane | Static | 0 V   |     1 | Connected to GND if the slot has the *Audio* feature available               | -               |
 | `/SLOT_VIDEO`   | Backplane | Static | 0 V   |     1 | Connected to GND if the slot has the *Video* feature available               | -               |
 | `/SLOT_FUNCx`   | Backplane | Static | 0 V   |     2 | Connected to GND if the slot has an unspecified feature available            | -               |
@@ -80,7 +94,32 @@ All signals that are not power signals use nominal voltage levels between 0.0 V 
 
 ### Power
 
-The Expansion Bus defines 3.3 V, 5 V and 12 V supplies at 500 mA each. Further electrical requirements such as tolerances, sequencing and inrush limits are not yet specified.
+The Expansion Bus defines 3.3 V, 5 V and 12 V supplies at 500 mA each.
+
+The 500 mA limit applies to the complete rail for one slot and is shared across all connector contacts carrying that rail.
+
+For a slot, the three rails are switched synchronously: 3.3 V, 5 V and 12 V are either all enabled or all disabled.
+
+Each rail is protected by an eFuse. The specific eFuse implementation is outside the Platform interface.
+
+An Expansion Card must not back-power an unpowered slot through a power rail or signal.
+
+When slot power is disabled, card-facing signals should be high-impedance and the card should not rely on host-side bias being present.
+
+Further electrical requirements such as rail tolerances, detailed sequencing, and inrush limits are not yet specified.
+
+### Reset Behavior
+
+For every reset event, `/RESET` is asserted low for at least **50 ms**.
+
+On slot power-on:
+
+- `/RESET` is already asserted when the slot rails turn on
+- `/RESET` is not released earlier than 50 ms after power-on
+
+A card that uses `/RESET` must enter a deterministic safe state equivalent to its power-on reset state while reset is asserted.
+
+A card must not create bus contention when leaving reset.
 
 ### Hot Swap
 
@@ -89,6 +128,8 @@ An implementation may support hot-swapping Expansion Cards, but hot-swap support
 ### I²C
 
 Each Expansion Card slot provides its own I²C bus segment, specified for operation up to 400 kHz.
+
+`I2C_SCL` and `I2C_SDA` use open-drain signaling in the 3.3 V domain. Pull-ups are provided by the Backplane and are present only while the slot is powered.
 
 From the Expansion Card's point of view, this is a complete I²C bus. The platform reserves only the following addresses in addition to addresses reserved by the I²C specification itself:
 
@@ -107,13 +148,37 @@ The architectural rationale for the per-slot I²C topology and the selected rese
 
 ### General Purpose I/O
 
-These signals will have a card-specific function and are driven by either the card or the Southbridge on the Backplane.
+These signals have a card-specific function and may be driven by either the card or the Southbridge on the Backplane.
 
 Each GP lane is backed directly by a Propeller 2 I/O pin and exposes the full Smart Pin capability of that pin, subject to the electrical limits of the Expansion Bus.
 
-They can be logic, differential or analog signals, as long as they stay in the nominal voltage range.
+They may be used for logic, analog, PWM, differential signaling, and software-defined interfaces such as USB 1.1 while remaining inside the nominal voltage range.
 
-An Expansion Card may ship a card-specific low-level driver that configures these I/Os, or use a platform-standard driver interface. See [Expansion Card EEPROM.md](Expansion%20Card%20EEPROM.md).
+The differential pairs are:
+
+- `GP0/GP1`
+- `GP2/GP3`
+- `GP4/GP5`
+- `GP6/GP7`
+
+Each pair may be used as a differential input pair or as two independent single-ended signals. Every pair is suitable for use as a USB 1.1 PHY pair.
+
+When used as logic, the Low-Level-Driver may configure the Smart Pin input/output behavior and thresholds per pin.
+
+PWM output is supported. Smart Pin DAC output may use the following drive modes:
+
+| Output impedance | Full-scale voltage |
+| ---: | ---: |
+| 990 Ω | 3.3 V |
+| 600 Ω | 2.0 V |
+| 123.75 Ω | 3.3 V |
+| 75 Ω | 2.0 V |
+
+Before a slot's Low-Level-Driver is active, the Southbridge keeps its GP lanes high-impedance.
+
+An Expansion Card should also leave GP lanes high-impedance until its interface is configured. A card that drives a GP lane before activation must do so in a way that remains non-destructive under possible contention.
+
+An Expansion Card may ship a card-specific Low-Level-Driver that configures these I/Os, or use a platform-standard driver interface. See [Expansion Card EEPROM.md](Expansion%20Card%20EEPROM.md).
 
 ### Low-Level Drivers
 
@@ -135,7 +200,11 @@ It is only available on slots with the *Audio* signal set.
 
 The high-speed lanes are only available on slots with the *Video* signal set.
 
+HSTX provides a low-latency, high-bandwidth path directly between Mainboard and Expansion Card, bypassing the Southbridge.
+
 The HSTX protocol is selected by the Expansion Card driver. The selected interface definition determines the direction and meaning of each HSTX pin.
+
+Until an HSTX interface is enabled, both sides keep the HSTX pins high-impedance. A card must not drive HSTX pins until the selected interface permits it.
 
 The Platform defines the following standard interface classes:
 
@@ -144,10 +213,24 @@ The Platform defines the following standard interface classes:
 | Unused | HSTX pins are unused and both sides keep them high-impedance |
 | Custom | Expansion Card driver defines the complete HSTX behavior |
 | DVI | Standard DVI HSTX interface |
+| QSPI | Standard quad-SPI HSTX interface |
+| QPI | Standard quad-I/O HSTX interface |
 | MIPI-DSI (1 lane) | Standard one-lane MIPI-DSI HSTX interface |
 | MIPI-DSI (2 lane) | Standard two-lane MIPI-DSI HSTX interface |
+| MIPI-CSI | Standard MIPI-CSI HSTX interface |
 
 The exact pin mappings and detailed electrical/protocol requirements of the standard HSTX interfaces are not yet specified.
+
+### Activation Sequence
+
+At interface level, slot activation proceeds in this order:
+
+1. The slot power rails are enabled together.
+2. `/RESET` is held low during power-up.
+3. GP and HSTX lanes remain in their safe/default state until configured.
+4. `/RESET` is released no earlier than 50 ms after slot power-on.
+
+Further activation steps involving future clock/profile metadata are not defined here.
 
 ## Connector
 
