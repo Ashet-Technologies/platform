@@ -115,28 +115,9 @@ They can be logic, differential or analog signals, as long as they stay in the n
 
 An Expansion Card may ship a card-specific low-level driver that configures these I/Os, or use a platform-standard driver interface. See [Expansion Card EEPROM.md](Expansion%20Card%20EEPROM.md).
 
-### Southbridge Resource Partition
+### Low-Level Drivers
 
-The Propeller 2 resources are partitioned uniformly across the seven Expansion ports:
-
-| Expansion port | Cog | P2 pins | Hub RAM |
-| ---: | ---: | --- | --- |
-| 0 | 0 | P0..P7 | 0 KiB..64 KiB |
-| 1 | 1 | P8..P15 | 64 KiB..128 KiB |
-| 2 | 2 | P16..P23 | 128 KiB..192 KiB |
-| 3 | 3 | P24..P31 | 192 KiB..256 KiB |
-| 4 | 4 | P32..P39 | 256 KiB..320 KiB |
-| 5 | 5 | P40..P47 | 320 KiB..384 KiB |
-| 6 | 6 | P48..P55 | 384 KiB..448 KiB |
-
-For an Expansion-port driver running in Cog `n`:
-
-```text
-pin_base = n * 8
-ram_base = n * 64 KiB
-```
-
-The driver can therefore derive its GP pin range and Hub RAM region directly from its Cog ID.
+The Southbridge resource partition and Low-Level-Driver execution model are specified in [Low Level Drivers.md](Low%20Level%20Drivers.md).
 
 ### I²S
 
