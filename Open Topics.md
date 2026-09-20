@@ -42,6 +42,17 @@ Interfaces requiring definitions include:
 
 The Custom and Unused interface semantics are already defined at a high level.
 
+### Expansion Card Mechanical Constraints
+
+The PCI Express x4 connector is fixed, but the remaining mechanical envelope is not yet specified.
+
+Still to define:
+
+- connector keying requirements
+- card outline
+- height limits
+- retention details
+
 ### Expansion Power Electrical Details
 
 The available rails and per-card current limits are defined.
