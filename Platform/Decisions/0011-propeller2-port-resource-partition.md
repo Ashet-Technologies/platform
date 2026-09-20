@@ -19,7 +19,7 @@ The Propeller 2 has 64 I/O pins. Seven Expansion Card ports each receive eight c
 | Expansion 6 | P48..P55 |
 | Mainboard / upstream | P56..P63 |
 
-The Mainboard allocation therefore contains the Propeller 2 bootstrapping pins.
+The Mainboard allocation must contain the Propeller 2 bootstrapping pins. This allows the Mainboard to control the bootstrapping/strapping pins and load the Southbridge firmware into the Propeller 2 during system startup.
 
 Propeller 2 Cogs 0..6 are allocated one-to-one to Expansion ports 0..6.
 
@@ -38,7 +38,7 @@ A uniform resource partition makes every Expansion port structurally equivalent 
 
 The same Cog-local firmware can therefore be loaded for different ports and compute its own resources from `COGID`.
 
-Placing the Mainboard/upstream group last also keeps the Propeller 2 bootstrapping pins on the Mainboard side rather than exposing them through an Expansion Card port.
+Placing the Mainboard/upstream group last keeps the Propeller 2 bootstrapping pins on the Mainboard side. This is required so the Mainboard can select the Propeller 2 bootstrap mode through the strapping pins and then load the Southbridge firmware. Exposing those pins through an Expansion Card port would prevent the Mainboard from reliably performing that bootstrap sequence.
 
 ## Consequences
 
@@ -47,3 +47,4 @@ Placing the Mainboard/upstream group last also keeps the Propeller 2 bootstrappi
 - Cogs 0..6 correspond directly to Expansion ports 0..6.
 - Each Expansion port has a deterministic 64 KiB Hub RAM region derived from its Cog ID.
 - The Mainboard/upstream interface occupies P56..P63.
+- The Propeller 2 bootstrapping/strapping pins are part of the Mainboard allocation so the Mainboard can load the Southbridge firmware.
