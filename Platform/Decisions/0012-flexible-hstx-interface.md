@@ -6,7 +6,7 @@
 
 Keep the eight HSTX lanes protocol-agnostic at the Platform level.
 
-The low-level driver selects an HSTX interface definition. That interface definition specifies the protocol and direction of each HSTX pin.
+The Expansion Card driver selects an HSTX interface definition. That interface definition specifies the protocol and direction of each HSTX pin.
 
 The Platform recognizes standard interface definitions so software can determine compatibility without understanding every card-specific driver.
 
@@ -32,6 +32,6 @@ A host can quickly determine whether it supports a standard HSTX interface, whil
 
 - HSTX direction is defined by the selected interface, not globally by the connector.
 - Unused requires both sides to leave the HSTX pins high-impedance.
-- Custom delegates protocol handling to the card-specific low-level driver.
+- Custom delegates protocol handling to the Expansion Card driver.
 - Standard interface identifiers provide a compatibility check between Mainboard and Expansion Card.
 - Standard HSTX pinouts remain an open specification topic.
