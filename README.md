@@ -7,3 +7,7 @@
 - **Mainboard:** Contains the CPU and RAM of the system and runs the OS. Connects to the Backplane.
 - **Expansion Card:** A generic expansion that provides additional, user-selectable features to the computer.
 - **Not-so-mainboard:** A Mainboard that supports being plugged into an Expansion Card slot and can be used as a coprocessor of sorts. It accepts commands or tasks when used in an Expansion Card slot.
+
+## Project Status
+
+High-level unresolved design work is tracked in [Open Topics.md](Open%20Topics.md).
