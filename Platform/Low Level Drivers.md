@@ -30,3 +30,56 @@ The driver can therefore derive its GP pin range and Hub RAM region directly fro
 Each GP lane is backed directly by a Propeller 2 I/O pin and exposes the full Smart Pin capability of that pin, subject to the electrical limits of the Expansion Bus.
 
 The resource partition is established by [Decision 0011](Decisions/0011-propeller2-port-resource-partition.md).
+
+## Southbridge Management Core
+
+The **Southbridge Management Core** is the Propeller 2 Cog responsible for managing the Low-Level-Drivers and their communication with the rest of the Southbridge.
+
+After bootstrap, the Southbridge Management Core runs in **Cog 7**.
+
+### Communication Channels
+
+Each Expansion Card slot may expose up to eight packet FIFO ports between its Low-Level-Driver and the Southbridge Management Core:
+
+- **0..4 upstream FIFO ports:** Low-Level-Driver → Southbridge Management Core
+- **0..4 downstream FIFO ports:** Southbridge Management Core → Low-Level-Driver
+
+Each FIFO port is an independent ring buffer carrying discrete datagrams/packets.
+
+Each packet has a payload size of:
+
+```text
+1..2048 bytes
+```
+
+The exact ring-buffer representation, packet framing, signaling, queue depth, and synchronization rules are not yet specified.
+
+### FIFO Memory
+
+All FIFO storage for an Expansion Card slot is allocated from that slot's **64 KiB Hub RAM region**.
+
+FIFO memory therefore consumes part of the same per-slot 64 KiB region available to the Low-Level-Driver.
+
+### Shared Memory Access
+
+The Southbridge Management Core may directly read and write the complete 64 KiB Hub RAM region assigned to each Expansion Card slot.
+
+This memory therefore also acts as shared memory between the Low-Level-Driver and the Southbridge Management Core.
+
+No additional copying mechanism is required for data that both sides agree to exchange through shared memory.
+
+The ownership, synchronization, and consistency rules for shared-memory data are not yet specified.
+
+## Management Core Bootstrap
+
+Propeller 2 bootstrap initially starts execution in **Cog 0**.
+
+During Southbridge bootstrap, the management firmware must relocate its execution from Cog 0 to **Cog 7**.
+
+After this relocation:
+
+- Cog 7 is the Southbridge Management Core.
+- Cog 0 becomes available for Expansion Card slot 0.
+- Cogs 0..6 are available for the seven Low-Level-Drivers.
+
+The exact relocation mechanism is not yet specified.
