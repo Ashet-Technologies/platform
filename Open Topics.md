@@ -80,6 +80,19 @@ Still to define:
 - host-side ABI
 - lifecycle and error behavior
 
+### Low-Level Driver Dynamic Linking
+
+Low-Level-Drivers currently derive their GP pin base and Hub RAM base from their Cog ID at runtime.
+
+Investigate dynamically linking or relocating Low-Level-Drivers when they are loaded so these addresses can be resolved ahead of execution instead.
+
+Goals include:
+
+- avoid repeated runtime computation of pin and memory offsets
+- allow direct use of resolved addresses in driver code
+- preserve the same driver binary/source model across Expansion Card slots
+- determine whether relocation metadata, patching, or another lightweight linking mechanism is appropriate
+
 ### Expansion Card EEPROM Versioning
 
 Metadata version 1 is defined.
