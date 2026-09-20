@@ -2,7 +2,11 @@
 
 A **Low-Level-Driver** is the piece of firmware running on the Propeller 2 Cog associated with an Expansion Card Slot.
 
-It implements the Southbridge-side handling of the slot's `GP0..GP7` signals. HSTX signals are not controlled by the Low-Level-Driver; they are handled by the regular Expansion Card driver and the selected HSTX interface definition.
+It acts as a **packet-to-card translator** between the Southbridge Management Core and the physical Expansion Card interface. It implements the Southbridge-side handling of the slot's `GP0..GP7` signals and translates packet/datagram traffic into the card-specific electrical protocol.
+
+A Low-Level-Driver does **not** expose operating-system functionality by itself. OS-visible functionality is provided by the Expansion Card Driver running on the Mainboard.
+
+HSTX signals are not controlled by the Low-Level-Driver; they are handled by the Expansion Card Driver and the selected HSTX interface definition.
 
 ## Southbridge Resource Partition
 

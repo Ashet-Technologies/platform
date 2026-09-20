@@ -37,10 +37,24 @@ The HSTX interface model and standard interface classes are defined, but the exa
 Interfaces requiring definitions include:
 
 - DVI
+- QSPI
+- QPI
 - MIPI-DSI, 1 lane
 - MIPI-DSI, 2 lanes
+- MIPI-CSI
 
 The Custom and Unused interface semantics are already defined at a high level.
+
+### Expansion Card Mechanical Constraints
+
+The PCI Express x4 connector is fixed, but the remaining mechanical envelope is not yet specified.
+
+Still to define:
+
+- connector keying requirements
+- card outline
+- height limits
+- retention details
 
 ### Expansion Power Electrical Details
 
@@ -92,6 +106,54 @@ Goals include:
 - allow direct use of resolved addresses in driver code
 - preserve the same driver binary/source model across Expansion Card slots
 - determine whether relocation metadata, patching, or another lightweight linking mechanism is appropriate
+
+### Expansion I²C Speed Declaration
+
+The Expansion Bus is nominally operated at 100 kHz and may run at up to 400 kHz when the card supports it.
+
+Still to define:
+
+- how a card declares its maximum supported I²C bus speed
+- when the Mainboard may change the bus speed
+- fallback behavior when multiple devices on the card have different limits
+
+### Audio Lane Generalization
+
+The current Audio lane group has I²S-oriented signals and newly-defined Audio profiles, including quad-input/output and SPI-like modes.
+
+The current fixed `I2S_SDIN` / `I2S_SDOUT` direction assignments are sufficient for bidirectional stereo, but do not directly represent the quad-input, quad-output, and SPI-like profiles. The generalized ownership/direction model must resolve this.
+
+Still to define:
+
+- the generalized electrical/ownership model for the Audio lane group
+- exact semantics of each Audio profile
+- whether and how non-I²S protocols reuse the clock/data lanes
+- compatibility behavior across Mainboards
+
+### Shared Audio Clocks Across Cards
+
+Investigate distributing `MCLK`, `BCLK`, and `WCLK` as shared system-wide audio clocks even to card positions without I²S data lanes.
+
+Goal: provide deterministic audio synchronization between multiple Expansion Cards.
+
+### Activation Sequence Diagram
+
+Add a Mermaid diagram for the Expansion Card activation sequence, including power, reset, optional clock enable, profile application, driver loading, and activation.
+
+### Standard Interface Terminology
+
+The term **Standard Interface** can currently refer to either:
+
+- an electrical interface/profile
+- a software/driver interface
+
+Define terminology that makes this distinction explicit.
+
+### Packet FIFO Interface Rationale
+
+Document the rationale for using packet/datagram-based FIFO ports between Low-Level-Drivers and the Southbridge Management Core.
+
+The rationale should cover why message boundaries are useful compared with an unstructured byte stream and how the model interacts with shared memory.
 
 ### Expansion Card EEPROM Versioning
 

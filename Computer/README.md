@@ -58,6 +58,8 @@ The exact electrical interface and connector pinout are defined by the [Platform
 
 On the current Mainboard, the eight Platform HSTX lanes are routed to HSTX-capable RP2350 pins. Those pins may use the RP2350 HSTX peripheral, PIO, or other applicable peripherals depending on the selected HSTX interface.
 
+For this Mainboard, the HSTX lanes have up to 300 MHz transmit capability and up to 150 MHz receive capability.
+
 ## Expansion Cards
 
 Expansion Cards provide user-selectable features. The designated card set for the Ashet Home Computer consists of:

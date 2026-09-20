@@ -6,7 +6,7 @@ Every Expansion Card EEPROM contains card metadata. A card may additionally embe
 
 ## Binary Encoding
 
-The implementation serializes the metadata structure in **little-endian** byte order.
+All integer fields in the EEPROM format are serialized in **little-endian** byte order.
 
 Reserved bytes and reserved bits are defined as zero.
 
@@ -52,7 +52,9 @@ The Metadata Block occupies the first 512 bytes of the EEPROM image.
 | `0x0014` | 4 | Product ID | `u32` | Vendor-specific product identifier |
 | `0x0018` | 4 | Properties | packed `u32` | Feature flags |
 | `0x001C` | 4 | Driver Interface | `u32` enum | Driver-interface identifier |
-| `0x0020` | 96 | Reserved | bytes | Must be zero |
+| `0x0020` | 4 | High-Speed Profile | `u32` enum | Requested default HSTX interface |
+| `0x0024` | 4 | Audio Profile | `u32` enum | Requested default Audio interface |
+| `0x0028` | 88 | Reserved | bytes | Must be zero |
 | `0x0080` | 128 | Driver Specific Data | fixed string | Driver-specific payload |
 | `0x0100` | 64 | Vendor Name | fixed string | Vendor name |
 | `0x0140` | 64 | Product Name | fixed string | Product name |
@@ -92,7 +94,8 @@ Compatibility behavior for versions other than 1 is not yet specified.
 | ---: | --- | --- |
 | 0 | Requires Audio | Card requires an Audio-capable slot |
 | 1 | Requires Video | Card requires a Video-capable slot |
-| 2..15 | Reserved | Must be zero |
+| 2 | Requires Clock | Card requires the per-slot 48 MHz clock |
+| 3..15 | Reserved | Must be zero |
 | 16 | Has Firmware | Card provides a card-specific low-level driver |
 | 17 | Has Icons | Card provides an icon block |
 | 18..31 | Reserved | Must be zero |
@@ -104,6 +107,39 @@ Compatibility behavior for versions other than 1 is not yet specified.
 A card that does not embed card-specific firmware may use this field to select a standard driver interface instead. Standard driver-interface identifiers and their behavior are not yet specified.
 
 The value `0` is currently named `none`.
+
+## High-Speed Profile
+
+`High-Speed Profile` is a 32-bit requested default for the HSTX interface.
+
+| Value | Profile |
+| ---: | --- |
+| 0 | unused |
+| 1 | DVI |
+| 2 | QSPI |
+| 3 | QPI |
+| 4 | MIPI-DSI, 1 lane |
+| 5 | MIPI-DSI, 2 lanes |
+| 6 | MIPI-CSI |
+
+The Mainboard may use this value during activation to choose an initial HSTX configuration. The Expansion Card Driver running on the Mainboard remains authoritative and may refine or override the initial configuration.
+
+## Audio Profile
+
+`Audio Profile` is a 32-bit requested default for the Audio lane group.
+
+| Value | Profile |
+| ---: | --- |
+| 0 | unused |
+| 1 | I2S Bi-Di Stereo |
+| 2 | I2S Quad-Channel Out |
+| 3 | I2S Quad-Channel In |
+| 4 | Dual-ChipSel SPI |
+| 5 | Dual-ChipSel Double-SPI |
+
+`I2S Quad-Channel Out` uses both I²S data lanes as outputs. `I2S Quad-Channel In` uses both data lanes as inputs.
+
+The final generalized Audio-lane behavior is still an open Platform topic.
 
 ## CRC32 Checksum
 
@@ -132,7 +168,9 @@ The Firmware Block occupies:
 
 and is exactly **2048 bytes**.
 
-When `Has Firmware` is set, this block contains the card-specific Propeller 2 low-level expansion driver. The driver is loaded into the Cog corresponding to the Expansion Card and forms the low-level interface between the host system and the card.
+When `Has Firmware` is set, this block contains the card-specific Propeller 2 Low-Level-Driver. The Mainboard reads the EEPROM through the slot I²C bus and loads this firmware into the Cog corresponding to the Expansion Card. The Backplane itself contains no logic that performs EEPROM discovery or driver loading.
+
+GP lane policy is defined by this Low-Level-Driver rather than by separate per-pin metadata fields.
 
 When `Has Firmware` is clear, the block is ignored and the card may use a platform-standard `Driver Interface` instead. Standard driver interfaces are not yet specified.
 

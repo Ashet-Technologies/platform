@@ -15,8 +15,11 @@ Currently recognized interface classes are:
 - Unused
 - Custom
 - DVI
+- QSPI
+- QPI
 - MIPI-DSI, 1 lane
 - MIPI-DSI, 2 lanes
+- MIPI-CSI
 
 The exact pin mappings for the standard interfaces are to be specified separately.
 
