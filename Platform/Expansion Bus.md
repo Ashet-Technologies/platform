@@ -42,7 +42,7 @@ A card may sample these straps at any time.
 
 Signal names prefixed with `/` are active-low.
 
-Unless specified otherwise, signal voltages are referenced to GND and must remain within 0.0 V to 3.3 V.
+Unless specified otherwise, signal voltages are referenced to GND and must remain within 0.0 V to 3.3 V. `/RESET` is an explicit exception and may be pulled up by the card to as much as 12 V.
 
 
 ### Power and Configuration
@@ -62,7 +62,7 @@ Unless specified otherwise, signal voltages are referenced to GND and must remai
 
 | Signal Name    | Driver    | Type                           | Level | Count | Function                                         | Frequency Limit |
 | -------------- | --------- | ------------------------------ | ----- | ----: | ------------------------------------------------ | --------------- |
-| `/RESET`       | Backplane | Open Drain                     | 3.3 V |     1 | Reset signal. Driven low when the card should reset itself | 1 kHz     |
+| `/RESET`       | Backplane | Open Collector                 | ≤12 V |     1 | Reset signal. Backplane only sinks the line low             | 1 kHz     |
 | `CLK`          | Backplane | Logic                          | 3.3 V |     1 | Global 48 MHz clock for synchronization          | 48 MHz          |
 | `I2C_SCL`      | Bi-di     | Open Collector                 | 3.3 V |     1 | Clock lane of the System I²C Bus                 | 400 kHz         |
 | `I2C_SDA`      | Bi-di     | Open Collector                 | 3.3 V |     1 | Data lane of the System I²C Bus                  | 400 kHz         |
@@ -112,9 +112,11 @@ Host-side biasing of `/PRESENT` is not part of the Expansion Card electrical con
 
 ### Reset Behavior
 
-`/RESET` is an active-low, 3.3 V open-drain signal.
+`/RESET` is an active-low open-collector signal.
 
-A card only needs to provide a pull-up for `/RESET` when it uses the signal. Cards that do not use `/RESET` may leave it unconnected.
+The Backplane never drives `/RESET` high and does not provide a pull-up.
+
+A card only needs to provide a pull-up for `/RESET` when it uses the signal. That pull-up may be to any voltage up to 12 V. Cards that do not use `/RESET` may leave it unconnected.
 
 For every reset event, `/RESET` is asserted low for at least **50 ms**.
 
@@ -137,13 +139,13 @@ An implementation may support hot-swapping Expansion Cards, but hot-swap support
 
 A slot may mute its clock by actively driving `CLK` to GND when the clock is not enabled for that slot.
 
-When `CLK` is enabled for a card, it must be stable before `/RESET` is released.
+If the Expansion Card metadata property `Requires Clock` is set, the Mainboard must enable the slot clock and ensure it is stable before `/RESET` is released.
 
-The mechanism used to request per-slot clock enablement is not yet specified.
+If `Requires Clock` is clear, the clock may remain muted for that slot.
 
 ### I²C
 
-Each Expansion Card slot provides its own I²C bus segment, specified for operation up to 400 kHz.
+Each Expansion Card slot provides its own I²C bus segment. The nominal bus speed is 100 kHz; a card may support operation up to 400 kHz.
 
 `I2C_SCL` and `I2C_SDA` use open-drain signaling in the 3.3 V domain. Pull-ups are provided by the Backplane and are present only while the slot is powered.
 
@@ -202,15 +204,24 @@ The Southbridge resource partition and Low-Level-Driver execution model are spec
 
 ### I²S
 
-The I²S bus has two audio streams on the signals `I2S_SDIN` and `I2S_SDOUT`.
+The Audio lane group currently uses host-driven I²S-style clocks and two data lanes.
 
-`I2S_SDOUT` contains the left and right channel data of a stereo audio output, while `I2S_SDIN` contains the left and right channel data of a stereo capturing device.
+The clock signals are shared and are always driven by the host system. This means that the sample rate is defined by the host and cannot be set by the card itself.
 
-The clock signals are shared for both audio streams and are always driven by the host system. This means that the sample rate is defined by the host and cannot be set by the card itself.
+The standard Audio profiles currently include:
+
+- `unused`
+- `I2S Bi-Di Stereo` — one stereo input and one stereo output
+- `I2S Quad-Channel Out` — both data lanes are outputs
+- `I2S Quad-Channel In` — both data lanes are inputs
+- `Dual-ChipSel SPI`
+- `Dual-ChipSel Double-SPI`
+
+The exact generalized Audio-lane model is still an open topic.
 
 Cards that need to be in control of their sample rate might need to do audio resampling or use the *General Purpose I/O* signals.
 
-It is only available on slots with the *Audio* signal set.
+The data lanes are only available on slots with the *Audio* signal set.
 
 ### High Speed Lanes
 
@@ -243,10 +254,12 @@ At interface level, slot activation proceeds in this order:
 
 1. The slot power rails are enabled together.
 2. `/RESET` is held low during power-up.
-3. GP and HSTX lanes remain in their safe/default state until configured.
-4. `/RESET` is released no earlier than 50 ms after slot power-on.
+3. If `Requires Clock` is set, `CLK` is enabled and becomes stable.
+4. The Mainboard interprets the requested HSTX and Audio profiles and applies supported defaults.
+5. GP and HSTX lanes remain in their safe/default state until configured.
+6. `/RESET` is released no earlier than 50 ms after slot power-on.
 
-Further activation steps involving future clock/profile metadata are not defined here.
+The Expansion Card Driver may subsequently refine or override the requested HSTX configuration.
 
 ## Connector
 
