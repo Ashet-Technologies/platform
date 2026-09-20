@@ -129,8 +129,6 @@ The Propeller 2 resources are partitioned uniformly across the seven Expansion p
 | 5 | 5 | P40..P47 | 320 KiB..384 KiB |
 | 6 | 6 | P48..P55 | 384 KiB..448 KiB |
 
-The Mainboard/upstream interface uses P56..P63.
-
 For an Expansion-port driver running in Cog `n`:
 
 ```text
@@ -156,14 +154,14 @@ It is only available on slots with the *Audio* signal set.
 
 The high-speed lanes are only available on slots with the *Video* signal set.
 
-The HSTX protocol is selected by the low-level driver. The selected interface definition determines the direction and meaning of each HSTX pin.
+The HSTX protocol is selected by the Expansion Card driver. The selected interface definition determines the direction and meaning of each HSTX pin.
 
 The Platform defines the following standard interface classes:
 
 | Interface | Meaning |
 | --- | --- |
 | Unused | HSTX pins are unused and both sides keep them high-impedance |
-| Custom | Card-specific low-level driver defines the complete HSTX behavior |
+| Custom | Expansion Card driver defines the complete HSTX behavior |
 | DVI | Standard DVI HSTX interface |
 | MIPI-DSI (1 lane) | Standard one-lane MIPI-DSI HSTX interface |
 | MIPI-DSI (2 lane) | Standard two-lane MIPI-DSI HSTX interface |
