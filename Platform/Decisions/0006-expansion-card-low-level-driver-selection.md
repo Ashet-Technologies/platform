@@ -8,7 +8,7 @@ An Expansion Card may embed a card-specific Propeller 2 low-level driver in its 
 
 Cards that can use a platform-standard low-level driver interface may omit card-specific firmware and identify the standard interface through the EEPROM `Driver Interface` field.
 
-During card initialization, the operating system loads the embedded low-level driver when `Has Firmware` is set. Otherwise, it uses the selected platform-standard driver interface.
+During card initialization, Mainboard software reads the card EEPROM through I²C and loads the embedded Low-Level-Driver when `Has Firmware` is set. Otherwise, it uses the selected platform-standard driver interface. The Backplane itself contains no logic that performs this loading.
 
 The standard driver interfaces and their identifiers are not yet specified.
 
