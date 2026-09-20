@@ -56,6 +56,8 @@ The current Backplane contains the Propeller 2 Southbridge. The Southbridge disp
 
 The exact electrical interface and connector pinout are defined by the [Platform documentation](../Platform/).
 
+On the current Mainboard, the eight Platform HSTX lanes are routed to HSTX-capable RP2350 pins. Those pins may use the RP2350 HSTX peripheral, PIO, or other applicable peripherals depending on the selected HSTX interface.
+
 ## Expansion Cards
 
 Expansion Cards provide user-selectable features. The designated card set for the Ashet Home Computer consists of:
