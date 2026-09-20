@@ -48,3 +48,5 @@ Placing the Mainboard/upstream group last keeps the Propeller 2 bootstrapping pi
 - Each Expansion port has a deterministic 64 KiB Hub RAM region derived from its Cog ID.
 - The Mainboard/upstream interface occupies P56..P63.
 - The Propeller 2 bootstrapping/strapping pins are part of the Mainboard allocation so the Mainboard can load the Southbridge firmware.
+
+The normative Low-Level-Driver execution model and resource mapping are documented in [Low Level Drivers.md](../Low%20Level%20Drivers.md).
