@@ -62,7 +62,7 @@ Unless specified otherwise, signal voltages are referenced to GND and must remai
 
 | Signal Name    | Driver    | Type                           | Level | Count | Function                                         | Frequency Limit |
 | -------------- | --------- | ------------------------------ | ----- | ----: | ------------------------------------------------ | --------------- |
-| `/RESET`       | Backplane | Logic                          | 3.3 V |     1 | Reset signal. Driven low when the card should reset itself | 1 kHz     |
+| `/RESET`       | Backplane | Open Drain                     | 3.3 V |     1 | Reset signal. Driven low when the card should reset itself | 1 kHz     |
 | `CLK`          | Backplane | Logic                          | 3.3 V |     1 | Global 48 MHz clock for synchronization          | 48 MHz          |
 | `I2C_SCL`      | Bi-di     | Open Collector                 | 3.3 V |     1 | Clock lane of the System I²C Bus                 | 400 kHz         |
 | `I2C_SDA`      | Bi-di     | Open Collector                 | 3.3 V |     1 | Data lane of the System I²C Bus                  | 400 kHz         |
@@ -108,7 +108,13 @@ When slot power is disabled, card-facing signals should be high-impedance and th
 
 Further electrical requirements such as rail tolerances, detailed sequencing, and inrush limits are not yet specified.
 
+Host-side biasing of `/PRESENT` is not part of the Expansion Card electrical contract.
+
 ### Reset Behavior
+
+`/RESET` is an active-low, 3.3 V open-drain signal.
+
+A card only needs to provide a pull-up for `/RESET` when it uses the signal. Cards that do not use `/RESET` may leave it unconnected.
 
 For every reset event, `/RESET` is asserted low for at least **50 ms**.
 
@@ -124,6 +130,16 @@ A card must not create bus contention when leaving reset.
 ### Hot Swap
 
 An implementation may support hot-swapping Expansion Cards, but hot-swap support is not required for platform compatibility. Hot-swap sequencing and electrical behavior are not yet specified.
+
+### Slot Clock
+
+`CLK` is a 48 MHz clock buffered per slot.
+
+A slot may mute its clock by actively driving `CLK` to GND when the clock is not enabled for that slot.
+
+When `CLK` is enabled for a card, it must be stable before `/RESET` is released.
+
+The mechanism used to request per-slot clock enablement is not yet specified.
 
 ### I²C
 
@@ -161,7 +177,7 @@ The differential pairs are:
 - `GP4/GP5`
 - `GP6/GP7`
 
-Each pair may be used as a differential input pair or as two independent single-ended signals. Every pair is suitable for use as a USB 1.1 PHY pair.
+Each pair may be used as a differential input pair or as two independent single-ended signals. Differential input may use the Propeller 2 analog comparator with optional biasing and Schmitt-trigger behavior. Every pair is suitable for use as a USB 1.1 PHY pair.
 
 When used as logic, the Low-Level-Driver may configure the Smart Pin input/output behavior and thresholds per pin.
 
