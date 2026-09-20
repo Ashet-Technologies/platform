@@ -90,7 +90,7 @@ Unless specified otherwise, signal voltages are referenced to GND and must remai
 | ----------- | ------ | ----: | ----------------------------------------------- |
 | `RESERVEDx` | N.C.   |     7 | Reserved for future use. Do not connect to anything. |
 
-All signals that are not power signals use nominal voltage levels between 0.0 V and 3.3 V.
+All signals that are not power signals use nominal voltage levels between 0.0 V and 3.3 V, except `/RESET`, whose card-provided pull-up may be as high as 12 V.
 
 ### Power
 
