@@ -43,17 +43,6 @@ The Mainboard-facing signal semantics are defined in [Mainboard.md](Mainboard.md
 | 31 | I2S_MCLK    | I2S_MCLK    | RESERVED6    | RESERVED0    |
 | 32 | GND         | GND         | GND          | GND          |
 
-## A8 Dual-Function Pin
-
-A8 is a dual-function pin whose bias depends on the slot role:
-
-- On a **Mainboard**, A8 is `/FAB_RESET` and is pulled down with 10 kΩ.
-- On an **Expansion Card slot**, A8 is pulled up to `+3V3` with 10 kΩ.
-
-This allows a Mainboard to detect whether it is installed in a Mainboard slot or in an Expansion Card slot. A Mainboard that supports this capability may switch into **Not-so-mainboard** mode when installed in an Expansion Card slot, allowing it to operate as a coprocessor and accept commands or tasks from the host system.
-
-The exact Not-so-mainboard operating mode and protocol are not yet specified.
-
 ## Notes
 
 - `/FAB_RESET`, `/SLOT_USB0`, `/SLOT_USB1`, `USB0_D+`, `USB0_D-`, `USB1_D+`, and `USB1_D-` are present only in the Mainboard-facing mapping and are not part of the generic Expansion Bus signal specification.
