@@ -118,7 +118,7 @@ Fully define the Southbridge Propeller 2 Hub RAM memory map.
 This includes:
 
 - the seven 64 KiB Expansion Slot Cog regions
-- Management Core memory
+- Management Cog memory
 - FIFO allocations inside each Expansion region
 - shared-memory regions
 - firmware/code placement
@@ -190,12 +190,6 @@ The term **Standard Interface** can currently refer to either:
 - a software/driver interface
 
 Define terminology that makes this distinction explicit.
-
-### Packet FIFO Interface Rationale
-
-Document the rationale for using packet/datagram-based FIFO ports between Low-Level-Drivers and the Southbridge Management Core.
-
-The rationale should cover why message boundaries are useful compared with an unstructured byte stream and how the model interacts with shared memory.
 
 ### Expansion Card EEPROM Versioning
 

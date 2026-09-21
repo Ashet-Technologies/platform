@@ -14,3 +14,4 @@
 - Do not use `Expansion Port`; use `Expansion Slot`.
 - Do not use `Card Port`; use `Slot` or the specific Slot type.
 - Do not use `Mainboard Port`; use `Mainboard Slot`.
+- A Propeller 2 CPU is called a **Cog**. Do not call a Propeller 2 Cog a **Core**.
