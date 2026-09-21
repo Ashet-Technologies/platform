@@ -4,7 +4,7 @@ This document defines the Mainboard-facing and Expansion-facing connector pin al
 
 The connector uses two 32-position sides, A and B.
 
-The Mainboard↔Backplane logical and electrical interface beyond this pin allocation is not yet specified.
+The Mainboard-facing signal semantics are defined in [Mainboard.md](Mainboard.md). This document defines the connector pin allocation.
 
 ## Mainboard- and Expansion-Facing Mapping
 
