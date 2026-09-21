@@ -4,7 +4,7 @@
 
 ## Decision
 
-The Default Backplane does not contain the system power regulators.
+The Backplane does not contain the system power regulators.
 
 Instead, the Backplane provides a connector for a separate internal **Power Board**. The Power Board generates the required system power rails.
 
