@@ -4,7 +4,7 @@
 
 ## Decision
 
-Use the Raspberry Pi RP2350 as the main SoC of the Ashet Home Computer Mainboard.
+Use the Raspberry Pi RP2350 as the main SoC of the Default Mainboard.
 
 ## Rationale
 
@@ -20,6 +20,6 @@ These properties make it suitable both for the finished computer and for develop
 
 ## Consequences
 
-- The concrete Mainboard architecture follows RP2350 capabilities and constraints.
+- The Default Mainboard architecture follows RP2350 capabilities and constraints.
 - Both Arm and RISC-V execution are available to Mainboard software.
 - The platform can benefit from the existing RP2350 software and tooling ecosystem.

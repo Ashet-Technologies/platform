@@ -4,7 +4,7 @@
 
 ## Decision
 
-Each Expansion Card slot receives its own I²C bus segment.
+Each Expansion Slot receives its own I²C bus segment.
 
 The PCA9547 I²C multiplexer is physically located on the Backplane. The Mainboard controls it to select which Expansion Card bus segment is connected to the host-side I²C controller.
 
@@ -24,7 +24,7 @@ Each Expansion Card now sees the same I²C interface and can use the same fixed 
 
 ## Consequences
 
-- All Expansion Card slots are equivalent from the card's I²C point of view.
+- All Expansion Slots are equivalent from the card's I²C point of view.
 - Expansion Cards do not need slot-dependent EEPROM address wiring.
 - The PCA9547 is physically on the Backplane; the Mainboard controls it to select the active Expansion Card I²C segment.
 - Each Expansion Card effectively receives a full I²C address space except for addresses reserved by the platform.

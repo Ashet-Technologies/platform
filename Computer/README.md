@@ -2,63 +2,78 @@
 
 This directory documents the concrete Ashet Home Computer design built on top of the interfaces defined in [Platform](../Platform/).
 
-The Platform documentation is authoritative for the interfaces between Mainboard, Backplane and Expansion Cards. This document describes the current computer implementation and deliberately does not redefine those interfaces.
+The Platform documentation is authoritative for the interfaces between Mainboards, Backplanes, Slots, and Expansion Cards. This document describes the first concrete computer implementation and deliberately does not redefine those interfaces.
 
 ## Architecture
 
 The computer uses a modular architecture made of independently replaceable functional units:
 
 ```
-Mainboard
+Default Mainboard
    │
    │ Mainboard interface
    ▼
 Backplane / Southbridge
    │
-   │ Expansion interface
-   ▼
-Expansion Cards
+   ├── 7 Expansion Slots
+   │
+   └── Power Board
 ```
 
-The current computer has seven Expansion Card slots:
+The system contains exactly one Mainboard Slot and seven Expansion Slots:
 
-- 5 Generic Expansion slots
-- 1 Generic + Video Expansion slot
-- 1 Generic + Audio Expansion slot
+- 5 Generic Expansion Slots
+- 1 Generic + High-Speed Expansion Slot
+- 1 Generic + Audio Expansion Slot
 
-The power supply is also a replaceable unit.
+## Default Mainboard
 
-## Mainboard
+The first fully realized Mainboard design is called the **Default Mainboard**. It is the reference implementation intended to be built first, not the only Mainboard concept planned for the computer.
 
-The Mainboard contains the CPU, system memory and non-volatile storage and runs Ashet OS.
+The Default Mainboard provides:
 
-The current Mainboard provides:
-
-- Raspberry Pi RP2350 main SoC
+- RP2350B system CPU
   - 150 MHz
   - two CPU cores
-  - Arm Cortex-M33 or RISC-V cores
+  - Arm Cortex-M33 or RISC-V
   - 512 KiB internal SRAM
-- 8 MB PSRAM
-- 16 MB Flash
-- USB 1.1 Host
-- 10/100 Mbps Ethernet
-- Battery-backed real-time clock
-- Integrated debug probe
+- 8 MiB APS6404L-3SQR-SN QSPI PSRAM
+- 16 MiB Flash
+- ENC624J600 10/100 Ethernet controller
+- four-port USB host hub
+  - USB0 to the Backplane
+  - USB1 to the Backplane
+  - one internal USB-A connector, primarily for USB mass storage
+  - one front-panel USB-A connector
+- second RP2350B running modified Picoprobe firmware as an integrated debug/flash probe
 
-The debug probe provides hardware debugging and a high-speed UART interface for logging and remote control.
+The integrated debug probe provides in-system flashing, hardware debugging, and a high-speed UART interface for logging and remote control.
+
+USB Mass Storage Class is the primary intended in-system mass-storage interface. Standard USB flash drives can be used directly, and USB-to-SD adapters allow use of SD cards without a native SD interface.
+
+The eight Platform HSTX lanes are routed to HSTX-capable RP2350 pins. Those pins may use the RP2350 HSTX peripheral, PIO, or other applicable peripherals depending on the selected HSTX interface.
+
+For the Default Mainboard, the HSTX lanes have up to 300 MHz transmit capability and up to 150 MHz receive capability.
 
 ## Backplane
 
-The Backplane interconnects the Mainboard and all Expansion Cards.
+The Backplane contains the Propeller 2 Southbridge and interconnects the Mainboard Slot and seven Expansion Slots.
 
-The current Backplane contains the Propeller 2 Southbridge. The Southbridge dispatches data between the Mainboard and Expansion Cards and provides the main electrical expansion interface.
+The Default Backplane uses one CH32V003 board-management controller per Expansion Slot. The controllers provide identical slot-management functionality at distinct I²C addresses.
 
-The exact electrical interface and connector pinout are defined by the [Platform documentation](../Platform/).
+The Backplane also contains the battery-backed real-time clock.
 
-On the current Mainboard, the eight Platform HSTX lanes are routed to HSTX-capable RP2350 pins. Those pins may use the RP2350 HSTX peripheral, PIO, or other applicable peripherals depending on the selected HSTX interface.
+The Backplane does not contain the system power regulators. Instead, a separate internal **Power Board** connects to the Backplane and generates the required rails.
 
-For this Mainboard, the HSTX lanes have up to 300 MHz transmit capability and up to 150 MHz receive capability.
+This separates development of the power supply from the Backplane logic and permits replaceable power implementations.
+
+## Default Power Supply
+
+The default configuration uses a ready-made external 12 V wall-wart power adapter connected through a barrel jack.
+
+The internal Power Board derives the required system rails from this 12 V input.
+
+Alternative Power Boards may use other sources, including integrated mains power, batteries, or USB-C.
 
 ## Expansion Cards
 
@@ -106,7 +121,7 @@ Expansion Cards provide user-selectable features. The designated card set for th
 
 ## Mechanical Design
 
-The current computer design uses a stock ABS enclosure with approximate external dimensions of 100 mm × 180 mm × 250 mm.
+The computer design uses a stock ABS enclosure with approximate external dimensions of 100 mm × 180 mm × 250 mm.
 
 The rear panel provides a mechanical power switch and a 12 V barrel-jack power input.
 

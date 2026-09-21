@@ -16,6 +16,6 @@ This supports both standard HSTX interfaces and future/custom interfaces without
 
 ## Consequences
 
-- The current Mainboard can use the RP2350 HSTX peripheral for interfaces that fit it.
+- The Default Mainboard can use the RP2350 HSTX peripheral for interfaces that fit it.
 - PIO or other peripherals may implement alternative HSTX protocols.
 - Platform HSTX flexibility does not require a Mainboard PCB redesign for every supported protocol.

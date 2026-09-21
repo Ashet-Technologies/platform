@@ -1,6 +1,6 @@
 # Low Level Drivers
 
-A **Low-Level-Driver** is the piece of firmware running on the Propeller 2 Cog associated with an Expansion Card Slot.
+A **Low-Level-Driver** is the piece of firmware running on the Propeller 2 Cog associated with an Expansion Slot.
 
 It acts as a **packet-to-card translator** between the Southbridge Management Core and the physical Expansion Card interface. It implements the Southbridge-side handling of the slot's `GP0..GP7` signals and translates packet/datagram traffic into the card-specific electrical protocol.
 
@@ -10,9 +10,9 @@ HSTX signals are not controlled by the Low-Level-Driver; they are handled by the
 
 ## Southbridge Resource Partition
 
-The Propeller 2 resources are partitioned uniformly across the seven Expansion ports:
+The Propeller 2 resources are partitioned uniformly across the seven Expansion Slots:
 
-| Expansion port | Cog | P2 pins | Hub RAM |
+| Expansion Slot | Cog | P2 pins | Hub RAM |
 | ---: | ---: | --- | --- |
 | 0 | 0 | P0..P7 | 0 KiB..64 KiB |
 | 1 | 1 | P8..P15 | 64 KiB..128 KiB |
@@ -43,7 +43,7 @@ After bootstrap, the Southbridge Management Core runs in **Cog 7**.
 
 ### Communication Channels
 
-Each Expansion Card slot may expose up to eight packet FIFO ports between its Low-Level-Driver and the Southbridge Management Core:
+Each Expansion Slot may expose up to eight packet FIFO ports between its Low-Level-Driver and the Southbridge Management Core:
 
 - **0..4 upstream FIFO ports:** Low-Level-Driver → Southbridge Management Core
 - **0..4 downstream FIFO ports:** Southbridge Management Core → Low-Level-Driver
@@ -60,13 +60,13 @@ The exact ring-buffer representation, packet framing, signaling, queue depth, an
 
 ### FIFO Memory
 
-All FIFO storage for an Expansion Card slot is allocated from that slot's **64 KiB Hub RAM region**.
+All FIFO storage for an Expansion Slot is allocated from that slot's **64 KiB Hub RAM region**.
 
 FIFO memory therefore consumes part of the same per-slot 64 KiB region available to the Low-Level-Driver.
 
 ### Shared Memory Access
 
-The Southbridge Management Core may directly read and write the complete 64 KiB Hub RAM region assigned to each Expansion Card slot.
+The Southbridge Management Core may directly read and write the complete 64 KiB Hub RAM region assigned to each Expansion Slot.
 
 This memory therefore also acts as shared memory between the Low-Level-Driver and the Southbridge Management Core.
 
@@ -83,7 +83,7 @@ During Southbridge bootstrap, the management firmware must relocate its executio
 After this relocation:
 
 - Cog 7 is the Southbridge Management Core.
-- Cog 0 becomes available for Expansion Card slot 0.
+- Cog 0 becomes available for Expansion Slot 0.
 - Cogs 0..6 are available for the seven Low-Level-Drivers.
 
 The exact relocation mechanism is not yet specified.

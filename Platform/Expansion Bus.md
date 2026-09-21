@@ -145,7 +145,7 @@ If `Requires Clock` is clear, the clock may remain muted for that slot.
 
 ### I²C
 
-Each Expansion Card slot provides its own I²C bus segment. The nominal bus speed is 100 kHz; a card may support operation up to 400 kHz.
+Each Expansion Slot provides its own I²C bus segment. The nominal bus speed is 100 kHz; a card may support operation up to 400 kHz.
 
 `I2C_SCL` and `I2C_SDA` use open-drain signaling in the 3.3 V domain. Pull-ups are provided by the Backplane and are present only while the slot is powered.
 
@@ -160,7 +160,7 @@ All other I²C addresses are available to the Expansion Card and will not be occ
 
 Each Expansion Card must provide a metadata EEPROM at address `0x57`. The EEPROM must provide at least 4 KiB of storage. Cards that embed an icon block must use at least an 8 KiB EEPROM. The EEPROM contains the Expansion Card metadata and may contain a card-specific low-level driver.
 
-The PCA9547 is physically on the Backplane; the Mainboard controls it to select the I²C bus segment belonging to a particular Expansion Card slot. Its control address is `0x77`.
+The PCA9547 is physically on the Backplane; the Mainboard controls it to select the I²C bus segment belonging to a particular Expansion Slot. Its control address is `0x77`.
 
 The architectural rationale for the per-slot I²C topology and the selected reserved addresses is documented in [Decisions](Decisions/).
 

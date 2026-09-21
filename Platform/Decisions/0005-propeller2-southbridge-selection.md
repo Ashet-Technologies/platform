@@ -23,15 +23,15 @@ The Propeller 2 was originally selected for two main reasons:
 
 The Propeller 2 can provide interfaces such as I²C, SPI, and USB 1.1 to Expansion Cards as **software-defined interfaces**. The exact interface behavior is therefore not restricted to a fixed peripheral mix.
 
-## Virtual MCU per Expansion Port
+## Virtual MCU per Expansion Slot
 
-A useful architectural model is that the Southbridge provides an effective **virtual MCU** for each of the seven Expansion Card ports.
+A useful architectural model is that the Southbridge provides an effective **virtual MCU** for each of the seven Expansion Slots.
 
-For each port, the platform can effectively dedicate:
+For each Expansion Slot, the platform can effectively dedicate:
 
 - one Propeller 2 CPU core
 - approximately 64 KiB of RAM
-- FIFO-based upstream and downstream communication with the Southbridge Management Core, which forwards data between the Expansion Cog and the Mainboard
+- FIFO-based upstream and downstream communication with the Southbridge Management Core, which forwards data between the Expansion Slot Cog and the Mainboard
 
 These are an allocation model of the shared Propeller 2 resources, not physically separate MCUs.
 
@@ -56,4 +56,4 @@ With the Southbridge architecture, that MCU-like role is handled centrally by th
 - Protocol implementation can live in Southbridge firmware instead of requiring an MCU on every card.
 - The Backplane carries more cost and complexity in exchange for reducing the cost and complexity of every Expansion Card.
 - Expansion interfaces can evolve in software while remaining inside the electrical and timing constraints of the Platform specification.
-- The seven Expansion Card ports can be treated as having similar computational support from the Southbridge, simplifying the overall expansion architecture.
+- The seven Expansion Slots can be treated as having similar computational support from the Southbridge, simplifying the overall expansion architecture.
