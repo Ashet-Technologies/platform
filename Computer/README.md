@@ -2,7 +2,7 @@
 
 This directory documents the concrete Ashet Home Computer design built on top of the interfaces defined in [Platform](../Platform/).
 
-The Platform documentation is authoritative for the interfaces between Mainboards, Backplanes, Slots, and Expansion Cards. This document describes the first concrete computer implementation and deliberately does not redefine those interfaces.
+The Platform documentation is authoritative for the interfaces between Mainboards, the Backplane, Slots, and Expansion Cards. This document describes the first concrete computer implementation and deliberately does not redefine those interfaces.
 
 ## Architecture
 
@@ -59,7 +59,7 @@ For the Default Mainboard, the HSTX lanes have up to 300 MHz transmit capability
 
 The Backplane contains the Propeller 2 Southbridge and interconnects the Mainboard Slot and seven Expansion Slots.
 
-The Default Backplane uses one CH32V003 board-management controller per Expansion Slot. The controllers provide identical slot-management functionality at distinct I²C addresses.
+The Backplane uses one CH32V003 board-management controller per Expansion Slot. The controllers provide identical slot-management functionality at distinct I²C addresses.
 
 The Backplane also contains the battery-backed real-time clock.
 
