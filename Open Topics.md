@@ -137,6 +137,18 @@ Goals include:
 - preserve the same driver binary/source model across Expansion Slots
 - determine whether relocation metadata, patching, or another lightweight linking mechanism is appropriate
 
+### Backplane I²C Subnet
+
+The PCA9547 provides eight downstream I²C channels. Seven channels are assigned one-to-one to the seven Expansion Slots. The eighth channel is intended to form a Backplane-local I²C subnet.
+
+Still to define:
+
+- which Backplane devices are connected to this subnet
+- I²C address assignments for Backplane devices
+- bus speed, pull-ups, and power-domain behavior
+- how the Mainboard discovers and initializes devices on the subnet
+- reset and failure behavior for Backplane-local devices
+
 ### Expansion I²C Speed Declaration
 
 The Expansion Bus is nominally operated at 100 kHz and may run at up to 400 kHz when the card supports it.
@@ -254,4 +266,13 @@ The historical/design background of the format is still to be documented, includ
 
 ## Computer
 
-No additional high-level Computer-specific open topic is currently recorded beyond the Platform topics that affect the concrete implementation.
+### Default Mainboard Flash Selection
+
+The Default Mainboard is intended to provide 16 MiB of non-volatile flash storage, but the concrete flash device is not yet selected.
+
+Still to define:
+
+- exact flash part
+- electrical interface and timing requirements
+- erase/program characteristics relevant to firmware and storage layout
+- any performance or availability constraints that affect the selection
