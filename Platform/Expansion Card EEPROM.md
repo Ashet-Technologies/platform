@@ -16,7 +16,7 @@ Per the global Platform string-encoding decision, strings are UTF-8 unless a spe
 
 ## EEPROM Image
 
-The mandatory EEPROM image is exactly **4096 bytes**:
+The base EEPROM layout occupies the first **4096 bytes**:
 
 | Address Range | Size | Contents |
 | --- | ---: | --- |
@@ -24,7 +24,7 @@ The mandatory EEPROM image is exactly **4096 bytes**:
 | `0x0200..0x07FF` | 1536 B | Reserved, must be zero |
 | `0x0800..0x0FFF` | 2048 B | Optional Propeller 2 low-level driver; ignored when absent |
 
-Every Expansion Card therefore requires at least a **4 KiB EEPROM**.
+Every Expansion Card therefore requires an EEPROM of at least **4 KiB**. The physical EEPROM may be larger than the minimum required size.
 
 If `Has Firmware` is set, the region at `0x0800..0x0FFF` contains a card-specific Propeller 2 low-level driver. If `Has Firmware` is clear, that region is ignored and the card may instead select a platform-standard driver through `Driver Interface`.
 
@@ -34,9 +34,9 @@ If the card embeds icons, the EEPROM image is extended with the optional Icon Bl
 | --- | ---: | --- |
 | `0x1000..0x17FF` | 2048 B | Expansion Card icon block |
 
-A card with embedded icons must use at least an **8 KiB EEPROM**. The icon block itself occupies only 2048 bytes; the larger EEPROM size is the required storage device capacity when icons are present.
+A card with embedded icons must use an EEPROM of at least **8 KiB**. The physical EEPROM may be larger. The icon block itself occupies only 2048 bytes.
 
-Bytes `0x1800..0x1FFF` of an 8 KiB EEPROM are currently undefined by this specification.
+Bytes `0x1800..0x1FFF` are currently undefined by this specification. Storage beyond the defined address ranges is also outside the current Platform format.
 
 
 ## Metadata Block
@@ -93,7 +93,7 @@ Compatibility behavior for versions other than 1 is not yet specified.
 | Bit | Field | Meaning |
 | ---: | --- | --- |
 | 0 | Requires Audio | Card requires an Audio-capable slot |
-| 1 | Requires Video | Card requires a Video-capable slot |
+| 1 | Requires High-Speed | Card requires the HSTX high-speed lanes |
 | 2 | Requires Clock | Card requires the per-slot 48 MHz clock |
 | 3..15 | Reserved | Must be zero |
 | 16 | Has Firmware | Card provides a card-specific low-level driver |
@@ -115,14 +115,15 @@ The value `0` is currently named `none`.
 | Value | Profile |
 | ---: | --- |
 | 0 | unused |
-| 1 | DVI |
-| 2 | QSPI |
-| 3 | QPI |
-| 4 | MIPI-DSI, 1 lane |
-| 5 | MIPI-DSI, 2 lanes |
-| 6 | MIPI-CSI |
+| 1 | Custom |
+| 2 | DVI |
+| 3 | QSPI |
+| 4 | QPI |
+| 5 | MIPI-DSI, 1 lane |
+| 6 | MIPI-DSI, 2 lanes |
+| 7 | MIPI-CSI |
 
-The Mainboard may use this value during activation to choose an initial HSTX configuration. The Expansion Card Driver running on the Mainboard remains authoritative and may refine or override the initial configuration.
+The Mainboard may use this value during activation to choose an initial HSTX configuration. `Custom` requests no standardized setup; the Expansion Card Driver configures the interface. The Expansion Card Driver running on the Mainboard remains authoritative and may refine or override any initial configuration.
 
 ## Audio Profile
 
@@ -134,12 +135,14 @@ The Mainboard may use this value during activation to choose an initial HSTX con
 | 1 | I2S Bi-Di Stereo |
 | 2 | I2S Quad-Channel Out |
 | 3 | I2S Quad-Channel In |
-| 4 | Dual-ChipSel SPI |
-| 5 | Dual-ChipSel Double-SPI |
 
-`I2S Quad-Channel Out` uses both I²S data lanes as outputs. `I2S Quad-Channel In` uses both data lanes as inputs.
+Profile directions are defined from the Mainboard perspective:
 
-The final generalized Audio-lane behavior is still an open Platform topic.
+- `I2S Bi-Di Stereo`: `I2S_SDOUT` transmits Mainboard → Card and `I2S_SDIN` transmits Card → Mainboard.
+- `I2S Quad-Channel Out`: both data lanes transmit Mainboard → Card.
+- `I2S Quad-Channel In`: both data lanes transmit Card → Mainboard.
+
+The Audio bus remains I²S for every profile. Whether both data lanes can reverse direction depends on Mainboard and Expansion Card hardware support.
 
 ## CRC32 Checksum
 
@@ -184,9 +187,9 @@ If `Has Icons` is set, the Icon Block occupies:
 
 and is exactly **2048 bytes**.
 
-Cards without embedded icons are not required to provide storage beyond the mandatory 4 KiB image.
+Cards without embedded icons are only required to provide at least the 4 KiB base EEPROM layout.
 
-Cards with embedded icons must use at least an 8 KiB EEPROM.
+Cards with embedded icons must use an EEPROM of at least 8 KiB.
 
 ### Pixel Format
 
