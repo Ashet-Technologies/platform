@@ -20,7 +20,7 @@ Connector pin locations are defined in [Pinout.md](Pinout.md).
 | `/SLOT_USB0` | Connected to GND on the Backplane when the Backplane uses the USB0 bus. |
 | `/RESET` | System reset. Open collector. Defaults to 3.3 V. A power-on reset is generated on system power-up. |
 | `/SLOT_USB1` | Connected to GND on the Backplane when the Backplane uses the USB1 bus. |
-| `/PRESENT` | Connected to GND on the Backplane. |
+| `/PRESENT` | Presence indication. The Mainboard must connect this signal to GND through 0 Ω, identical to an Expansion Card. |
 | `CLK` | Global 48 MHz clock. |
 | `HSTX0..HSTX7` | Eight high-speed lanes connected directly to an Expansion Card slot. |
 | `GP0..GP7` | Eight signals connected to Propeller 2 pins P56..P63. |
@@ -32,6 +32,6 @@ Connector pin locations are defined in [Pinout.md](Pinout.md).
 | `USB1_D+` | D+ lane of USB1, driven by the Mainboard. |
 | `I2S_WCLK` | Word clock of the Audio bus, driven by the Mainboard. |
 | `USB1_D-` | D− lane of USB1, driven by the Mainboard. |
-| `I2S_MCLK` | Master clock of the Audio bus, driven by the Mainboard. Its frequency must be 256..512 times the frequency of `I2S_WCLK`. |
+| `I2S_MCLK` | Master clock of the Audio bus, driven by the Mainboard. Its frequency must be 256..512 times the frequency of `I2S_WCLK`, up to 50 MHz. |
 
 Signal names prefixed with `/` are active-low.
