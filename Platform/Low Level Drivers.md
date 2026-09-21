@@ -43,14 +43,14 @@ After bootstrap, the Southbridge Management Cog runs in **Cog 7**.
 
 ### Communication Channels
 
-Each Expansion Slot has eight packet FIFO channels between its Low-Level-Driver and the Southbridge Management Cog:
+Each Expansion Slot may use up to eight packet FIFO channels between its Low-Level-Driver and the Southbridge Management Cog:
 
-- **0..3 upstream FIFOs:** Low-Level-Driver → Southbridge Management Cog
-- **0..3 downstream FIFOs:** Southbridge Management Cog → Low-Level-Driver
+- **0..4 upstream FIFOs:** Low-Level-Driver → Southbridge Management Cog
+- **0..4 downstream FIFOs:** Southbridge Management Cog → Low-Level-Driver
 
-Each FIFO is an independent ring buffer carrying discrete datagrams/packets.
+Each FIFO is an independent ring buffer carrying discrete datagrams/packets and is semantically independent from every other FIFO.
 
-Matching upstream/downstream FIFO indices may be used as four independent bidirectional channel pairs. A driver that needs more logical channels must multiplex them in software.
+A Low-Level-Driver may use any number of upstream and downstream FIFOs within these limits, including zero FIFOs. If more logical channels are required than the available FIFOs provide, they must be multiplexed in software.
 
 Each packet has a payload size of:
 
