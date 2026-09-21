@@ -45,7 +45,6 @@ The Default Mainboard provides:
   - USB1 to the Backplane
   - one internal USB-A connector, primarily for USB mass storage
   - one front-panel USB-A connector
-- battery-backed real-time clock
 - second RP2350B running modified Picoprobe firmware as an integrated debug/flash probe
 
 The integrated debug probe provides in-system flashing, hardware debugging, and a high-speed UART interface for logging and remote control.
@@ -61,6 +60,8 @@ For the Default Mainboard, the HSTX lanes have up to 300 MHz transmit capability
 The Backplane contains the Propeller 2 Southbridge and interconnects the Mainboard Slot and seven Expansion Slots.
 
 The Default Backplane uses one CH32V003 board-management controller per Expansion Slot. The controllers provide identical slot-management functionality at distinct I²C addresses.
+
+The Backplane also contains the battery-backed real-time clock.
 
 The Backplane does not contain the system power regulators. Instead, a separate internal **Power Board** connects to the Backplane and generates the required rails.
 
