@@ -78,7 +78,7 @@ Unless specified otherwise, signal voltages are referenced to GND and must remai
 
 | Signal Name | Driver    | Type  | Level | Count | Function                              | Frequency Limit |
 | ----------- | --------- | ----- | ----- | ----: | ------------------------------------- | --------------- |
-| `I2S_MCLK`  | Backplane | Logic | 3.3 V |     1 | Master clock of both I²S streams      | 25 MHz          |
+| `I2S_MCLK`  | Backplane | Logic | 3.3 V |     1 | Master clock of both I²S streams      | 50 MHz          |
 | `I2S_BCLK`  | Backplane | Logic | 3.3 V |     1 | Bit clock of both I²S streams         | 6.5 MHz         |
 | `I2S_WCLK`  | Backplane | Logic | 3.3 V |     1 | Word clock of both I²S streams        | 192 kHz         |
 | `I2S_SDIN`  | Bi-di     | Logic | 3.3 V |     1 | I²S data lane. Default: Card → Mainboard       | 6.5 MHz         |
