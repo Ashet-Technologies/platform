@@ -1,55 +1,37 @@
 # Open Topics
 
-This document tracks high-level Platform and Computer design areas that are intentionally not yet specified.
+This document tracks Platform and Computer design areas that are intentionally not yet specified.
 
 ## Platform
 
-### Mainboard ↔ Backplane Interface
+### Mainboard ↔ Southbridge Bootstrap and Transport
 
-The logical and electrical Mainboard↔Backplane interface beyond the connector pin allocation is not yet specified.
+The physical Mainboard interface and connector semantics are defined, and the Mainboard is responsible for loading Southbridge firmware into the Propeller 2.
 
-Open work includes:
+Still to define:
 
-- bootstrap sequence
-- reset behavior
-- timing requirements
-- electrical limits
-- ownership and direction of configurable signals
-- firmware-defined transport/protocol constraints
+- the exact Southbridge bootstrap/loading sequence
+- timing requirements during bootstrap
+- the runtime Mainboard ↔ Southbridge transport/protocol
+- error handling and recovery for the transport
 
 ### Not-so-mainboard Mode
 
-The A8 detection mechanism is defined, but the behavior of a Mainboard when installed in an Expansion Slot is not yet specified.
-
-Open work includes:
-
-- discovery
-- boot behavior
-- command/task interface
-- lifecycle
-- error handling
-- interaction with the host Mainboard
-
-### Fabric Reset Boot Behavior
-
-Mainboards must sample `/FAB_RESET` during startup.
-
-If `/FAB_RESET` is high at boot, the Mainboard must not enter normal Mainboard operation. It must instead enter either:
-
-- a high-impedance state, or
-- Not-so-mainboard mode
+A Mainboard can detect that it is installed in an Expansion Slot through A8/`/FAB_RESET`. When `/FAB_RESET` is high during startup, normal Mainboard operation must not begin.
 
 Still to define:
 
 - the exact point during startup when `/FAB_RESET` is sampled
-- whether high-impedance mode or Not-so-mainboard mode is selected automatically
-- which signals must be high-impedance
-- behavior if `/FAB_RESET` changes after the initial sample
+- whether the Card enters a fully high-impedance state first or directly enters Not-so-mainboard mode
+- which signals must be high-impedance during detection and transition
+- discovery and command/task protocol
+- lifecycle and error handling
+- behavior if `/FAB_RESET` changes after startup
 - reset and recovery behavior
 
 ### Standard HSTX Pinouts
 
-The HSTX interface model and standard interface classes are defined, but the exact standard pin mappings are not.
+The HSTX interface model and standard interface classes are defined, but the exact standard pin mappings and detailed interface requirements are not.
 
 Interfaces requiring definitions include:
 
@@ -59,8 +41,6 @@ Interfaces requiring definitions include:
 - MIPI-DSI, 1 lane
 - MIPI-DSI, 2 lanes
 - MIPI-CSI
-
-The Custom and Unused interface semantics are already defined at a high level.
 
 ### Expansion Card Mechanical Constraints
 
@@ -75,33 +55,32 @@ Still to define:
 
 ### Expansion Power Electrical Details
 
-The available rails and per-card current limits are defined.
+The available rails, 500 mA per-rail limit, synchronous rail switching, and eFuse requirement are defined.
 
 Still to define:
 
 - voltage tolerances
-- sequencing
 - inrush limits
 - transient behavior
-- overcurrent behavior
+- detailed overcurrent behavior
 - connector/power-distribution compliance requirements
 
 ### Hot-Swap Contract
 
 Hot-swap support is optional.
 
-For implementations that provide it, the following still need definition:
+For implementations that provide it, still define:
 
 - insertion/removal sequencing
 - power behavior
 - reset behavior
 - signal high-impedance requirements
-- presence detection timing
+- presence-detection timing
 - failure behavior
 
 ### Standard Low-Level Driver Interfaces
 
-The EEPROM can select a platform-standard low-level driver interface instead of embedding card-specific firmware.
+The EEPROM can select a Platform-standard Low-Level-Driver interface instead of embedding card-specific firmware.
 
 Still to define:
 
@@ -119,23 +98,30 @@ This includes:
 
 - the seven 64 KiB Expansion Slot Cog regions
 - Management Core memory
-- FIFO allocations inside each Expansion region
+- FIFO allocations inside each Expansion Slot region
 - shared-memory regions
 - firmware/code placement
-- any reserved or global Southbridge memory
+- reserved or global Southbridge memory
 
-### Low-Level Driver Dynamic Linking
+### Low-Level-Driver Relocation
 
 Low-Level-Drivers currently derive their GP pin base and Hub RAM base from their Cog ID at runtime.
 
-Investigate dynamically linking or relocating Low-Level-Drivers when they are loaded so these addresses can be resolved ahead of execution instead.
+Investigate whether drivers should instead be relocated or patched when loaded so these addresses can be resolved ahead of execution.
 
-Goals include:
+### Low-Level-Driver Communication ABI
 
-- avoid repeated runtime computation of pin and memory offsets
-- allow direct use of resolved addresses in driver code
-- preserve the same driver binary/source model across Expansion Slots
-- determine whether relocation metadata, patching, or another lightweight linking mechanism is appropriate
+The basic packet-FIFO and shared-memory model is defined, but its concrete ABI is not.
+
+Still to define:
+
+- ring-buffer representation
+- packet framing
+- signaling
+- queue depth
+- synchronization
+- shared-memory ownership and consistency rules
+- Management Core bootstrap relocation details
 
 ### Backplane I²C Subnet
 
@@ -144,58 +130,38 @@ The PCA9547 provides eight downstream I²C channels. Seven channels are assigned
 Still to define:
 
 - which Backplane devices are connected to this subnet
-- I²C address assignments for Backplane devices
-- bus speed, pull-ups, and power-domain behavior
-- how the Mainboard discovers and initializes devices on the subnet
-- reset and failure behavior for Backplane-local devices
+- I²C address assignments
+- bus speed
+- pull-ups and power-domain behavior
+- Mainboard discovery and initialization
+- reset and failure behavior
 
 ### Expansion I²C Speed Declaration
 
-The Expansion Bus is nominally operated at 100 kHz and may run at up to 400 kHz when the card supports it.
+The Expansion Bus runs nominally at 100 kHz and may run at up to 400 kHz when the Card supports it.
 
 Still to define:
 
-- how a card declares its maximum supported I²C bus speed
+- how a Card declares its maximum supported I²C speed
 - when the Mainboard may change the bus speed
-- fallback behavior when multiple devices on the card have different limits
+- fallback behavior when devices on the same Card have different limits
 
 ### Audio Data-Lane Direction
 
-The Audio bus is always I²S.
-
-Both I²S data lanes may be used bidirectionally when the Mainboard and Expansion Card hardware support it. By default, `I2S_SDIN` carries Card → Mainboard data and `I2S_SDOUT` carries Mainboard → Card data.
+The Audio bus is always I²S. Both data lanes may be bidirectional when the Mainboard and Expansion Card hardware support it. Default directions are already defined.
 
 Still to define:
 
 - how Mainboards and Expansion Cards declare bidirectional data-lane capability
 - how direction changes are negotiated and applied
 - electrical requirements while changing direction
-- required behavior when a requested Audio profile is unsupported
+- behavior when a requested Audio profile is unsupported
 
 ### Shared Audio Clocks Across Cards
 
-Investigate distributing `MCLK`, `BCLK`, and `WCLK` as shared system-wide audio clocks even to card positions without I²S data lanes.
+Investigate distributing `MCLK`, `BCLK`, and `WCLK` as shared system-wide audio clocks even to Slot positions without Audio data lanes.
 
-Goal: provide deterministic audio synchronization between multiple Expansion Cards.
-
-### Activation Sequence Diagram
-
-Add a Mermaid diagram for the Expansion Card activation sequence: assert reset, power on, read/validate EEPROM, optional clock setup, optional HSTX setup, optional Audio setup, Low-Level-Driver loading, Expansion Card Driver loading, then reset release.
-
-### Standard Interface Terminology
-
-The term **Standard Interface** can currently refer to either:
-
-- an electrical interface/profile
-- a software/driver interface
-
-Define terminology that makes this distinction explicit.
-
-### Packet FIFO Interface Rationale
-
-Document the rationale for using packet/datagram-based FIFO ports between Low-Level-Drivers and the Southbridge Management Core.
-
-The rationale should cover why message boundaries are useful compared with an unstructured byte stream and how the model interacts with shared memory.
+Goal: deterministic audio synchronization between multiple Expansion Cards.
 
 ### Expansion Card EEPROM Versioning
 
@@ -220,34 +186,20 @@ Examples include:
 - `Has Firmware` versus `Driver Interface`
 - behavior for unsupported requested profiles
 
-### Expansion Card Lifecycle
-
-The individual mechanisms exist, but the complete lifecycle is not yet specified as one contract.
-
-Still to define:
-
-- presence detection
-- reset
-- EEPROM discovery
-- compatibility check
-- driver selection/loading
-- activation
-- removal
-
 ### Platform Electrical Compliance
 
-Nominal levels and several frequency limits are defined, but a general electrical compliance specification is still missing.
+Nominal levels and frequency limits are defined, but a general electrical compliance specification is still missing.
 
-Potential items include:
+Still to define:
 
 - logic thresholds
 - drive strength
 - load/capacitance limits
 - slew rate
 - analog constraints
-- differential signaling constraints
+- differential-signaling constraints
 
-### Platform Revision and Compatibility Policy
+### Platform Revision Policy
 
 There is no formal Platform revision scheme yet.
 
@@ -257,12 +209,6 @@ Still to define:
 - rules for future Platform revisions
 - reserved-field evolution
 - feature negotiation
-
-### Ashet HSV Background
-
-The Ashet HSV encoding and its Platform-wide use are specified.
-
-The historical/design background of the format is still to be documented, including the exploration that led to the encoding and why it was selected over alternative 8-bit color representations.
 
 ## Computer
 
@@ -275,4 +221,4 @@ Still to define:
 - exact flash part
 - electrical interface and timing requirements
 - erase/program characteristics relevant to firmware and storage layout
-- any performance or availability constraints that affect the selection
+- performance and availability constraints that affect the selection
