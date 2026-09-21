@@ -1,6 +1,6 @@
 | Vendor ID | Product ID | Product Name             | Requires Audio | Requires High-Speed |
 | --------- | ---------- | ------------------------ | -------------- | -------------- |
-| 13        | 1          | Quad-Port PS/2 Expansion | No             | No             |
+| 13        | 1          | Quad-Port PS/2 Expansion Card | No             | No             |
 | 13        | 2          | DVI Framebuffer Video    | No             | Yes            |
 | 13        | 3          | PCM Sound                | Yes            | No             |
 | 13        | 4          | RS232                    | No             | No             |

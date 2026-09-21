@@ -21,15 +21,15 @@ The Expansion Bus has several *optional* features that must not be present on ea
 
 Each feature might require a certain set of signals to be present:
 
-| Feature  | Standard Signals | Video Signals | Audio Signals |
+| Feature  | Standard Signals | High-Speed Signals | Audio Signals |
 | -------- | ---------------- | ------------- | ------------- |
 | Standard | ✅                | ❌             | ❌             |
 | Audio    | ✅                | ❌             | ✅             |
-| Video    | ✅                | ✅             | ❌             |
+| High-Speed | ✅              | ✅                  | ❌             |
 
 In addition, `/SLOT_FUNC0` and `/SLOT_FUNC1` indicate unspecified slot-specific features.
 
-The slot feature straps `/SLOT_AUDIO`, `/SLOT_VIDEO`, `/SLOT_FUNC0`, and `/SLOT_FUNC1` are passive Backplane signals:
+The slot feature straps `/SLOT_AUDIO`, `/SLOT_HS`, `/SLOT_FUNC0`, and `/SLOT_FUNC1` are passive Backplane signals:
 
 - a supported feature is indicated by a hard 0 Ω connection to GND
 - an unsupported feature is left unconnected
@@ -55,7 +55,7 @@ Unless specified otherwise, signal voltages are referenced to GND and must remai
 | `+12V`          | Backplane | Power  | 12 V  |     2 | 12 V, 500 mA Power Supply                                                   | -               |
 | `/PRESENT`      | Card      | Static | 0 V   |     1 | Presence detection. Must be tied to GND through 0 Ω on the Expansion Card   | -               |
 | `/SLOT_AUDIO`   | Backplane | Static | 0 V   |     1 | Connected to GND if the slot has the *Audio* feature available               | -               |
-| `/SLOT_VIDEO`   | Backplane | Static | 0 V   |     1 | Connected to GND if the slot has the *Video* feature available               | -               |
+| `/SLOT_HS`      | Backplane | Static | 0 V   |     1 | Connected to GND if the slot has the *High-Speed* feature available          | -               |
 | `/SLOT_FUNCx`   | Backplane | Static | 0 V   |     2 | Connected to GND if the slot has an unspecified feature available            | -               |
 
 ### Standard Signals
@@ -68,7 +68,7 @@ Unless specified otherwise, signal voltages are referenced to GND and must remai
 | `I2C_SDA`      | Bi-di     | Open Collector                 | 3.3 V |     1 | Data lane of the System I²C Bus                  | 400 kHz         |
 | `GP0`…`GP7`  | Bi-di     | Logic, Differential or Analog  | 3.3 V |     8 | General-purpose I/O signals from the Southbridge | 300 MHz         |
 
-### Video Signals
+### High-Speed Signals
 
 | Signal Name       | Driver | Type                  | Level | Count | Function                                                               | Frequency Limit |
 | ----------------- | ------ | --------------------- | ----- | ----: | ---------------------------------------------------------------------- | --------------- |
@@ -228,7 +228,7 @@ The data lanes are only available on slots with the *Audio* signal set.
 
 ### High Speed Lanes
 
-The high-speed lanes are only available on slots with the *Video* signal set.
+The high-speed lanes are only available on slots with the *High-Speed* signal set.
 
 HSTX provides a low-latency, high-bandwidth path directly between Mainboard and Expansion Card, bypassing the Southbridge.
 
@@ -285,7 +285,7 @@ This table defines the Expansion Card-facing pinout. See [Pinout.md](Pinout.md) 
 |   4 | +3V3         | +3V3          |
 |   5 | GND          | GND           |
 |   6 | I2C_SCL      | /SLOT_AUDIO   |
-|   7 | I2C_SDA      | /SLOT_VIDEO   |
+|   7 | I2C_SDA      | /SLOT_HS   |
 |   8 | +3V3 10K     | /SLOT_FUNC0   |
 |   9 | /RESET       | /SLOT_FUNC1   |
 |  10 | GND          | /PRESENT      |
@@ -312,7 +312,7 @@ This table defines the Expansion Card-facing pinout. See [Pinout.md](Pinout.md) 
 |  31 | I2S_MCLK     | RESERVED6     |
 |  32 | GND          | GND           |
 
-Expansion-facing A8 is pulled up to `+3V3` through 10 kΩ. See [Pinout.md](Pinout.md) for its dual-function Mainboard/Expansion behavior.
+Expansion Card-facing A8 is pulled up to `+3V3` through 10 kΩ. See [Mainboard.md](Mainboard.md) for its dual-function Slot-role behavior.
 
 ## Expansion Card EEPROM
 

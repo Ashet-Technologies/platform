@@ -21,12 +21,12 @@ Signal names prefixed with `/` are active-low.
 | --- | --- |
 | `I2C_SCL` | System I²C bus clock lane. 3.3 V, open collector. Connected only to the PCA9547 on the Backplane. |
 | `I2C_SDA` | System I²C bus data lane. 3.3 V, open collector. Connected only to the PCA9547 on the Backplane. |
-| `/FAB_RESET` | Fabric reset. Resets the Southbridge. Pulled down to GND through 10 kΩ by default. |
+| `/FAB_RESET` | Fabric reset. Resets the Southbridge. The Mainboard does not provide a bias resistor; the Backplane biases A8 according to the Slot role. |
 | `/RESET` | System reset. Open collector. Defaults to 3.3 V. A power-on reset is generated on system power-up. |
 | `/PRESENT` | Presence indication. The Mainboard must connect this signal to GND through 0 Ω, identical to an Expansion Card. |
 | `CLK` | Global 48 MHz clock. |
 | `/SLOT_AUDIO` | Connected to GND on the Backplane when the Backplane provides the Audio bus. |
-| `/SLOT_VIDEO` | Connected to GND on the Backplane when the Backplane provides the high-speed bus. |
+| `/SLOT_HS` | Connected to GND on the Backplane when the Backplane provides the High-Speed bus. |
 | `/SLOT_USB0` | Connected to GND on the Backplane when the Backplane uses the USB0 bus. |
 | `/SLOT_USB1` | Connected to GND on the Backplane when the Backplane uses the USB1 bus. |
 
@@ -54,7 +54,7 @@ Signal names prefixed with `/` are active-low.
 
 ## USB
 
-USB0 and USB1 are Mainboard-slot **USB host ports**.
+USB0 and USB1 are **USB host ports** of the Mainboard Slot.
 
 The Backplane expects either a USB host or no connection on these pin pairs. A Mainboard must not expose a USB device on either pair.
 
@@ -67,11 +67,11 @@ The Backplane expects either a USB host or no connection on these pin pairs. A M
 
 ## A8 Dual-Function Pin
 
-A8 is a dual-function pin whose bias depends on the slot role:
+A8 is a dual-function pin whose bias is provided by the Backplane according to the Slot role. The Mainboard itself does not provide a pull-up or pull-down on A8:
 
-- On a **Mainboard**, A8 is `/FAB_RESET` and is pulled down with 10 kΩ.
-- On an **Expansion Slot**, A8 is pulled up to `+3V3` with 10 kΩ.
+- In the **Mainboard Slot**, the Backplane pulls `/FAB_RESET` down to GND through 10 kΩ.
+- In an **Expansion Slot**, the Backplane pulls A8 up to `+3V3` through 10 kΩ.
 
-This allows a Mainboard to detect whether it is installed in a Mainboard slot or in an Expansion Slot. A Mainboard that supports this capability may switch into **Not-so-mainboard** mode when installed in an Expansion Slot, allowing it to operate as a coprocessor and accept commands or tasks from the host system.
+This allows a Mainboard to detect whether it is installed in the Mainboard Slot or in an Expansion Slot. A Mainboard that supports this capability may switch into **Not-so-mainboard** mode when installed in an Expansion Slot, allowing it to operate as a coprocessor and accept commands or tasks from the host system.
 
 The exact Not-so-mainboard operating mode and protocol are not yet specified.
