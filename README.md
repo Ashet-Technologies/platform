@@ -26,6 +26,10 @@ Avoid these terms:
 - `Expansion Card Slot`; use **Expansion Slot**
 - `Mainboard Card`; use **Mainboard**
 - `Expansion` as a standalone noun; use **Expansion Card**, **Expansion Slot**, or the specific interface name
+- `Port` / `port` when referring to a Card/Slot receptacle; use **Slot**
+- `Expansion Port`; use **Expansion Slot**
+- `Card Port`; use **Slot** or the specific Slot type
+- `Mainboard Port`; use **Mainboard Slot**
 
 ## Project Status
 
