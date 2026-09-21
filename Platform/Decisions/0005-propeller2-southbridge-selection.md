@@ -29,9 +29,9 @@ A useful architectural model is that the Southbridge provides an effective **vir
 
 For each Expansion Slot, the platform can effectively dedicate:
 
-- one Propeller 2 CPU core
+- one Propeller 2 Cog
 - approximately 64 KiB of RAM
-- FIFO-based upstream and downstream communication with the Southbridge Management Core, which forwards data between the Expansion Slot Cog and the Mainboard
+- FIFO-based upstream and downstream communication with the Southbridge Management Cog, which forwards data between the Expansion Slot Cog and the Mainboard
 
 These are an allocation model of the shared Propeller 2 resources, not physically separate MCUs.
 
