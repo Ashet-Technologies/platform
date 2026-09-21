@@ -1,14 +1,14 @@
 # Ashet Platform Pinout
 
-This document defines the Mainboard-facing and Expansion-facing connector pin allocation.
+This document defines the Mainboard-facing and Expansion Card-facing connector pin allocation.
 
 The connector uses two 32-position sides, A and B.
 
 The Mainboard-facing signal semantics are defined in [Mainboard.md](Mainboard.md). This document defines the connector pin allocation.
 
-## Mainboard- and Expansion-Facing Mapping
+## Mainboard- and Expansion Card-Facing Mapping
 
-| Pin | A Side, Mainboard | A Side, Expansion | B Side, Expansion | B Side, Mainboard |
+| Pin | A Side, Mainboard | A Side, Expansion Card | B Side, Expansion Card | B Side, Mainboard |
 | --: | ----------------- | ----------------- | ----------------- | ----------------- |
 | 1  | GND         | GND         | GND          | GND          |
 | 2  | +12V        | +12V        | +12V         | +12V         |
@@ -16,7 +16,7 @@ The Mainboard-facing signal semantics are defined in [Mainboard.md](Mainboard.md
 | 4  | +3V3        | +3V3        | +3V3         | +3V3         |
 | 5  | GND         | GND         | GND          | GND          |
 | 6  | I2C_SCL     | I2C_SCL     | /SLOT_AUDIO  | /SLOT_AUDIO  |
-| 7  | I2C_SDA     | I2C_SDA     | /SLOT_VIDEO  | /SLOT_VIDEO  |
+| 7  | I2C_SDA     | I2C_SDA     | /SLOT_HS  | /SLOT_HS  |
 | 8  | /FAB_RESET  | +3V3 10K    | /SLOT_FUNC0  | /SLOT_USB0   |
 | 9  | /RESET      | /RESET      | /SLOT_FUNC1  | /SLOT_USB1   |
 | 10 | GND         | GND         | /PRESENT     | /PRESENT     |
@@ -47,6 +47,6 @@ The Mainboard-facing signal semantics are defined in [Mainboard.md](Mainboard.md
 
 - `/FAB_RESET`, `/SLOT_USB0`, `/SLOT_USB1`, `USB0_D+`, `USB0_D-`, `USB1_D+`, and `USB1_D-` are present only in the Mainboard-facing mapping and are not part of the generic Expansion Bus signal specification.
 - `/FAB_RESET` is pulled down by default with a 10 kΩ resistor.
-- The Expansion-facing mapping exposes seven reserved signals: `RESERVED0` through `RESERVED6`.
+- The Expansion Card-facing mapping exposes seven reserved signals: `RESERVED0` through `RESERVED6`.
 - `CLK` is the global 48 MHz platform clock and has a 48 MHz frequency limit.
 - `HSTX0` through `HSTX7` are bidirectional high-speed lanes.
