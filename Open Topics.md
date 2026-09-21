@@ -109,6 +109,17 @@ Low-Level-Drivers currently derive their GP pin base and Hub RAM base from their
 
 Investigate whether drivers should instead be relocated or patched when loaded so these addresses can be resolved ahead of execution.
 
+### Packet FIFO Interface Rationale
+
+Document the rationale for using packet/datagram-based FIFO communication between Low-Level-Drivers and the Southbridge Management Core.
+
+The rationale should cover:
+
+- why preserving message boundaries is useful
+- why packet FIFOs are preferred over an unstructured byte stream
+- how packet FIFOs complement shared-memory communication
+- the intended division of responsibility between FIFO messages and shared memory
+
 ### Low-Level-Driver Communication ABI
 
 The basic packet-FIFO and shared-memory model is defined, but its concrete ABI is not.
@@ -163,6 +174,15 @@ Investigate distributing `MCLK`, `BCLK`, and `WCLK` as shared system-wide audio 
 
 Goal: deterministic audio synchronization between multiple Expansion Cards.
 
+### Standard Interface Terminology
+
+The term **Standard Interface** can refer to different concepts, including:
+
+- a standardized electrical/interface profile
+- a standardized software/driver interface
+
+Define terminology that makes these concepts unambiguous throughout the Platform documentation.
+
 ### Expansion Card EEPROM Versioning
 
 Metadata version 1 is defined.
@@ -209,6 +229,16 @@ Still to define:
 - rules for future Platform revisions
 - reserved-field evolution
 - feature negotiation
+
+### Ashet HSV Background
+
+Document the design history and rationale of the Ashet HSV color format.
+
+This should cover:
+
+- the exploration that led to the encoding
+- why it was selected over alternative 8-bit color representations
+- the intended trade-offs and design goals behind the format
 
 ## Computer
 
