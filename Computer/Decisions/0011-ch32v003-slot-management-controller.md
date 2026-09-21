@@ -6,7 +6,7 @@
 
 Use the **CH32V003** as the internal board-management controller for Expansion Slots.
 
-The Default Backplane may use one CH32V003 per Expansion Slot. Each controller provides the same management features and firmware interface, using a distinct I²C address.
+The Backplane may use one CH32V003 per Expansion Slot. Each controller provides the same management features and firmware interface, using a distinct I²C address.
 
 ## Rationale
 
