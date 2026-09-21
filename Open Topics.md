@@ -30,6 +30,23 @@ Open work includes:
 - error handling
 - interaction with the host Mainboard
 
+### Fabric Reset Boot Behavior
+
+Mainboards must sample `/FAB_RESET` during startup.
+
+If `/FAB_RESET` is high at boot, the Mainboard must not enter normal Mainboard operation. It must instead enter either:
+
+- a high-impedance state, or
+- Not-so-mainboard mode
+
+Still to define:
+
+- the exact point during startup when `/FAB_RESET` is sampled
+- whether high-impedance mode or Not-so-mainboard mode is selected automatically
+- which signals must be high-impedance
+- behavior if `/FAB_RESET` changes after the initial sample
+- reset and recovery behavior
+
 ### Standard HSTX Pinouts
 
 The HSTX interface model and standard interface classes are defined, but the exact standard pin mappings are not.
