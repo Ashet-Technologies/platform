@@ -117,7 +117,7 @@ Fully define the Southbridge Propeller 2 Hub RAM memory map.
 
 This includes:
 
-- the seven 64 KiB Expansion Cog regions
+- the seven 64 KiB Expansion Slot Cog regions
 - Management Core memory
 - FIFO allocations inside each Expansion region
 - shared-memory regions
