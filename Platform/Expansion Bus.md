@@ -81,8 +81,8 @@ Unless specified otherwise, signal voltages are referenced to GND and must remai
 | `I2S_MCLK`  | Backplane | Logic | 3.3 V |     1 | Master clock of both I²S streams      | 25 MHz          |
 | `I2S_BCLK`  | Backplane | Logic | 3.3 V |     1 | Bit clock of both I²S streams         | 6.5 MHz         |
 | `I2S_WCLK`  | Backplane | Logic | 3.3 V |     1 | Word clock of both I²S streams        | 192 kHz         |
-| `I2S_SDIN`  | Card      | Logic | 3.3 V |     1 | Data lane of the I²S input stream     | 6.5 MHz         |
-| `I2S_SDOUT` | Backplane | Logic | 3.3 V |     1 | Data lane of the I²S output stream    | 6.5 MHz         |
+| `I2S_SDIN`  | Bi-di     | Logic | 3.3 V |     1 | I²S data lane. Default: Card → Mainboard       | 6.5 MHz         |
+| `I2S_SDOUT` | Bi-di     | Logic | 3.3 V |     1 | I²S data lane. Default: Mainboard → Card       | 6.5 MHz         |
 
 ### Reserved Signals
 
@@ -160,7 +160,7 @@ All other I²C addresses are available to the Expansion Card and will not be occ
 
 Each Expansion Card must provide a metadata EEPROM at address `0x57`. The EEPROM must provide at least 4 KiB of storage. Cards that embed an icon block must use at least an 8 KiB EEPROM. The EEPROM contains the Expansion Card metadata and may contain a card-specific low-level driver.
 
-The Backplane uses a PCA9547 to select the I²C bus segment belonging to a particular Expansion Card slot. Its control address is `0x77`.
+The PCA9547 is physically on the Backplane; the Mainboard controls it to select the I²C bus segment belonging to a particular Expansion Card slot. Its control address is `0x77`.
 
 The architectural rationale for the per-slot I²C topology and the selected reserved addresses is documented in [Decisions](Decisions/).
 
@@ -204,20 +204,23 @@ The Southbridge resource partition and Low-Level-Driver execution model are spec
 
 ### I²S
 
-The Audio lane group currently uses host-driven I²S-style clocks and two data lanes.
+The Audio bus always uses I²S. It provides host-driven I²S clocks and two data lanes.
 
 The clock signals are shared and are always driven by the host system. This means that the sample rate is defined by the host and cannot be set by the card itself.
 
-The standard Audio profiles currently include:
+The two data lanes may be used bidirectionally when both the Mainboard and Expansion Card hardware support the required direction. Their default directions are:
+
+- `I2S_SDIN`: Card → Mainboard
+- `I2S_SDOUT`: Mainboard → Card
+
+The standard Audio profiles are:
 
 - `unused`
-- `I2S Bi-Di Stereo` — one stereo input and one stereo output
-- `I2S Quad-Channel Out` — both data lanes are outputs
-- `I2S Quad-Channel In` — both data lanes are inputs
-- `Dual-ChipSel SPI`
-- `Dual-ChipSel Double-SPI`
+- `I2S Bi-Di Stereo` — one stereo lane in each direction using the default lane directions
+- `I2S Quad-Channel Out` — both data lanes transmit from Mainboard to Card
+- `I2S Quad-Channel In` — both data lanes transmit from Card to Mainboard
 
-The exact generalized Audio-lane model is still an open topic.
+The exact hardware capability and direction-negotiation rules remain an open topic.
 
 Cards that need to be in control of their sample rate might need to do audio resampling or use the *General Purpose I/O* signals.
 
@@ -252,14 +255,17 @@ The exact pin mappings and detailed electrical/protocol requirements of the stan
 
 At interface level, slot activation proceeds in this order:
 
-1. The slot power rails are enabled together.
-2. `/RESET` is held low during power-up.
-3. If `Requires Clock` is set, `CLK` is enabled and becomes stable.
-4. The Mainboard interprets the requested HSTX and Audio profiles and applies supported defaults.
-5. GP and HSTX lanes remain in their safe/default state until configured.
-6. `/RESET` is released no earlier than 50 ms after slot power-on.
+1. Assert `/RESET`.
+2. Enable the slot power rails.
+3. Read and validate the Expansion Card EEPROM data.
+4. If `Requires Clock` is set, enable `CLK` and wait until it is stable.
+5. If requested and supported, enable and configure the HSTX interface.
+6. If requested and supported, enable and configure the Audio lanes.
+7. Determine and load the Low-Level-Driver.
+8. Load the Expansion Card Driver on the Mainboard.
+9. Release `/RESET`.
 
-The Expansion Card Driver may subsequently refine or override the requested HSTX configuration.
+`/RESET` must remain asserted for at least 50 ms after slot power-on. The Expansion Card Driver remains authoritative for runtime HSTX configuration.
 
 ## Connector
 
