@@ -19,7 +19,7 @@ Open work includes:
 
 ### Not-so-mainboard Mode
 
-The A8 detection mechanism is defined, but the behavior of a Mainboard when installed in an Expansion Card slot is not yet specified.
+The A8 detection mechanism is defined, but the behavior of a Mainboard when installed in an Expansion Slot is not yet specified.
 
 Open work includes:
 
@@ -134,7 +134,7 @@ Goals include:
 
 - avoid repeated runtime computation of pin and memory offsets
 - allow direct use of resolved addresses in driver code
-- preserve the same driver binary/source model across Expansion Card slots
+- preserve the same driver binary/source model across Expansion Slots
 - determine whether relocation metadata, patching, or another lightweight linking mechanism is appropriate
 
 ### Expansion I²C Speed Declaration
