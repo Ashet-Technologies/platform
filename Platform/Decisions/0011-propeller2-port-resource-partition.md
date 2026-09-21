@@ -30,7 +30,7 @@ pin_base = n * 8
 ram_base = n * 64 KiB
 ```
 
-This allows an Low-Level-Driver to derive its pin range and Hub RAM range directly from its Cog ID.
+This allows a Low-Level-Driver to derive its pin range and Hub RAM range directly from its Cog ID.
 
 ## Rationale
 
