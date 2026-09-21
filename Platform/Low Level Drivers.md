@@ -2,7 +2,7 @@
 
 A **Low-Level-Driver** is the piece of firmware running on the Propeller 2 Cog associated with an Expansion Slot.
 
-It acts as a **packet-to-card translator** between the Southbridge Management Core and the physical Expansion Card interface. It implements the Southbridge-side handling of the slot's `GP0..GP7` signals and translates packet/datagram traffic into the card-specific electrical protocol.
+It acts as a **packet-to-card translator** between the Southbridge Management Cog and the physical Expansion Card interface. It implements the Southbridge-side handling of the slot's `GP0..GP7` signals and translates packet/datagram traffic into the card-specific electrical protocol.
 
 A Low-Level-Driver does **not** expose operating-system functionality by itself. OS-visible functionality is provided by the Expansion Card Driver running on the Mainboard.
 
@@ -35,20 +35,22 @@ Each GP lane is backed directly by a Propeller 2 I/O pin and exposes the full Sm
 
 The resource partition is established by [Decision 0011](Decisions/0011-propeller2-slot-resource-partition.md).
 
-## Southbridge Management Core
+## Southbridge Management Cog
 
-The **Southbridge Management Core** is the Propeller 2 Cog responsible for managing the Low-Level-Drivers and their communication with the rest of the Southbridge.
+The **Southbridge Management Cog** is the Propeller 2 Cog responsible for managing the Low-Level-Drivers and their communication with the rest of the Southbridge.
 
-After bootstrap, the Southbridge Management Core runs in **Cog 7**.
+After bootstrap, the Southbridge Management Cog runs in **Cog 7**.
 
 ### Communication Channels
 
-Each Expansion Slot may expose up to eight packet FIFO ports between its Low-Level-Driver and the Southbridge Management Core:
+Each Expansion Slot has eight packet FIFO channels between its Low-Level-Driver and the Southbridge Management Cog:
 
-- **0..4 upstream FIFO ports:** Low-Level-Driver → Southbridge Management Core
-- **0..4 downstream FIFO ports:** Southbridge Management Core → Low-Level-Driver
+- **0..3 upstream FIFOs:** Low-Level-Driver → Southbridge Management Cog
+- **0..3 downstream FIFOs:** Southbridge Management Cog → Low-Level-Driver
 
-Each FIFO port is an independent ring buffer carrying discrete datagrams/packets.
+Each FIFO is an independent ring buffer carrying discrete datagrams/packets.
+
+Matching upstream/downstream FIFO indices may be used as four independent bidirectional channel pairs. A driver that needs more logical channels must multiplex them in software.
 
 Each packet has a payload size of:
 
@@ -60,29 +62,29 @@ The exact ring-buffer representation, packet framing, signaling, queue depth, an
 
 ### FIFO Memory
 
-All FIFO storage for an Expansion Slot is allocated from that slot's **64 KiB Hub RAM region**.
+All FIFO storage for an Expansion Slot is allocated from that Slot's **64 KiB Hub RAM region**.
 
 FIFO memory therefore consumes part of the same per-slot 64 KiB region available to the Low-Level-Driver.
 
 ### Shared Memory Access
 
-The Southbridge Management Core may directly read and write the complete 64 KiB Hub RAM region assigned to each Expansion Slot.
+The Southbridge Management Cog may directly read and write the complete 64 KiB Hub RAM region assigned to each Expansion Slot.
 
-This memory therefore also acts as shared memory between the Low-Level-Driver and the Southbridge Management Core.
+This memory therefore also acts as shared memory between the Low-Level-Driver and the Southbridge Management Cog.
 
 No additional copying mechanism is required for data that both sides agree to exchange through shared memory.
 
 The ownership, synchronization, and consistency rules for shared-memory data are not yet specified.
 
-## Management Core Bootstrap
+## Management Cog Bootstrap
 
 Propeller 2 bootstrap initially starts execution in **Cog 0**.
 
-During Southbridge bootstrap, the management firmware must relocate its execution from Cog 0 to **Cog 7**.
+During Southbridge bootstrap, the Management Cog firmware must relocate its execution from Cog 0 to **Cog 7**.
 
 After this relocation:
 
-- Cog 7 is the Southbridge Management Core.
+- Cog 7 is the Southbridge Management Cog.
 - Cog 0 becomes available for Expansion Slot 0.
 - Cogs 0..6 are available for the seven Low-Level-Drivers.
 
