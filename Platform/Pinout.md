@@ -4,7 +4,7 @@ This document defines the Mainboard-facing and Expansion-facing connector pin al
 
 The connector uses two 32-position sides, A and B.
 
-The Mainboard↔Backplane logical and electrical interface beyond this pin allocation is not yet specified.
+The Mainboard-facing signal semantics are defined in [Mainboard.md](Mainboard.md). This document defines the connector pin allocation.
 
 ## Mainboard- and Expansion-Facing Mapping
 
@@ -42,17 +42,6 @@ The Mainboard↔Backplane logical and electrical interface beyond this pin alloc
 | 30 | GND         | GND         | RESERVED5    | GND          |
 | 31 | I2S_MCLK    | I2S_MCLK    | RESERVED6    | RESERVED0    |
 | 32 | GND         | GND         | GND          | GND          |
-
-## A8 Dual-Function Pin
-
-A8 is a dual-function pin whose bias depends on the slot role:
-
-- On a **Mainboard**, A8 is `/FAB_RESET` and is pulled down with 10 kΩ.
-- On an **Expansion Card slot**, A8 is pulled up to `+3V3` with 10 kΩ.
-
-This allows a Mainboard to detect whether it is installed in a Mainboard slot or in an Expansion Card slot. A Mainboard that supports this capability may switch into **Not-so-mainboard** mode when installed in an Expansion Card slot, allowing it to operate as a coprocessor and accept commands or tasks from the host system.
-
-The exact Not-so-mainboard operating mode and protocol are not yet specified.
 
 ## Notes
 
