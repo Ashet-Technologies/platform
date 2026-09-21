@@ -111,6 +111,19 @@ Still to define:
 - host-side ABI
 - lifecycle and error behavior
 
+### Propeller 2 Memory Map
+
+Fully define the Southbridge Propeller 2 Hub RAM memory map.
+
+This includes:
+
+- the seven 64 KiB Expansion Cog regions
+- Management Core memory
+- FIFO allocations inside each Expansion region
+- shared-memory regions
+- firmware/code placement
+- any reserved or global Southbridge memory
+
 ### Low-Level Driver Dynamic Linking
 
 Low-Level-Drivers currently derive their GP pin base and Hub RAM base from their Cog ID at runtime.
@@ -134,18 +147,18 @@ Still to define:
 - when the Mainboard may change the bus speed
 - fallback behavior when multiple devices on the card have different limits
 
-### Audio Lane Generalization
+### Audio Data-Lane Direction
 
-The current Audio lane group has I²S-oriented signals and newly-defined Audio profiles, including quad-input/output and SPI-like modes.
+The Audio bus is always I²S.
 
-The current fixed `I2S_SDIN` / `I2S_SDOUT` direction assignments are sufficient for bidirectional stereo, but do not directly represent the quad-input, quad-output, and SPI-like profiles. The generalized ownership/direction model must resolve this.
+Both I²S data lanes may be used bidirectionally when the Mainboard and Expansion Card hardware support it. By default, `I2S_SDIN` carries Card → Mainboard data and `I2S_SDOUT` carries Mainboard → Card data.
 
 Still to define:
 
-- the generalized electrical/ownership model for the Audio lane group
-- exact semantics of each Audio profile
-- whether and how non-I²S protocols reuse the clock/data lanes
-- compatibility behavior across Mainboards
+- how Mainboards and Expansion Cards declare bidirectional data-lane capability
+- how direction changes are negotiated and applied
+- electrical requirements while changing direction
+- required behavior when a requested Audio profile is unsupported
 
 ### Shared Audio Clocks Across Cards
 
@@ -155,7 +168,7 @@ Goal: provide deterministic audio synchronization between multiple Expansion Car
 
 ### Activation Sequence Diagram
 
-Add a Mermaid diagram for the Expansion Card activation sequence, including power, reset, optional clock enable, profile application, driver loading, and activation.
+Add a Mermaid diagram for the Expansion Card activation sequence: assert reset, power on, read/validate EEPROM, optional clock setup, optional HSTX setup, optional Audio setup, Low-Level-Driver loading, Expansion Card Driver loading, then reset release.
 
 ### Standard Interface Terminology
 
@@ -179,9 +192,21 @@ Metadata version 1 is defined.
 Still to define:
 
 - handling of unknown versions
-- backward/forward compatibility rules
+- rules for future metadata-version evolution
 - feature negotiation
 - rejection/fallback behavior
+
+### EEPROM Cross-Validation
+
+Define validation rules between related EEPROM fields.
+
+Examples include:
+
+- `Requires High-Speed` versus `High-Speed Profile`
+- `Requires Audio` versus `Audio Profile`
+- `Requires Clock` versus interfaces that depend on `CLK`
+- `Has Firmware` versus `Driver Interface`
+- behavior for unsupported requested profiles
 
 ### Expansion Card Lifecycle
 
@@ -217,10 +242,9 @@ There is no formal Platform revision scheme yet.
 Still to define:
 
 - Platform version identifier
-- compatibility rules
+- rules for future Platform revisions
 - reserved-field evolution
 - feature negotiation
-- backward/forward compatibility expectations
 
 ### Ashet HSV Background
 

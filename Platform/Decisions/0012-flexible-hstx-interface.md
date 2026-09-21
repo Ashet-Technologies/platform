@@ -25,7 +25,7 @@ The exact pin mappings for the standard interfaces are to be specified separatel
 
 ## Rationale
 
-Hard-wiring the high-speed lanes to one video protocol would unnecessarily constrain future Mainboards and Expansion Cards.
+Hard-wiring the high-speed lanes to one protocol would unnecessarily constrain future Mainboards and Expansion Cards.
 
 Keeping the pins flexible allows future electrical/protocol uses while standard interface definitions preserve interoperability for common cases.
 

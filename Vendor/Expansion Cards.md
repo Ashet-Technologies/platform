@@ -1,4 +1,4 @@
-| Vendor ID | Product ID | Product Name             | Requires Audio | Requires Video |
+| Vendor ID | Product ID | Product Name             | Requires Audio | Requires High-Speed |
 | --------- | ---------- | ------------------------ | -------------- | -------------- |
 | 13        | 1          | Quad-Port PS/2 Expansion | No             | No             |
 | 13        | 2          | DVI Framebuffer Video    | No             | Yes            |

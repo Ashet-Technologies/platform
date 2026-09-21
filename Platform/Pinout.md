@@ -60,4 +60,4 @@ The exact Not-so-mainboard operating mode and protocol are not yet specified.
 - `/FAB_RESET` is pulled down by default with a 10 kΩ resistor.
 - The Expansion-facing mapping exposes seven reserved signals: `RESERVED0` through `RESERVED6`.
 - `CLK` is the global 48 MHz platform clock and has a 48 MHz frequency limit.
-- `HSTX0` through `HSTX7` are bidirectional video-bus pins.
+- `HSTX0` through `HSTX7` are bidirectional high-speed lanes.

@@ -31,7 +31,7 @@ For each port, the platform can effectively dedicate:
 
 - one Propeller 2 CPU core
 - approximately 64 KiB of RAM
-- FIFO-based upstream and downstream communication with the Mainboard
+- FIFO-based upstream and downstream communication with the Southbridge Management Core, which forwards data between the Expansion Cog and the Mainboard
 
 These are an allocation model of the shared Propeller 2 resources, not physically separate MCUs.
 

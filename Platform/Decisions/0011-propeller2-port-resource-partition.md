@@ -30,13 +30,13 @@ pin_base = n * 8
 ram_base = n * 64 KiB
 ```
 
-This allows an Expansion-port driver to derive its pin range and Hub RAM range directly from its Cog ID.
+This allows a Low-Level-Driver to derive its pin range and Hub RAM range directly from its Cog ID.
 
 ## Rationale
 
 A uniform resource partition makes every Expansion port structurally equivalent and avoids per-port configuration tables.
 
-The same Cog-local firmware can therefore be loaded for different ports and compute its own resources from `COGID`.
+The same Low-Level-Driver firmware can therefore be loaded for different ports and compute its own resources from `COGID`.
 
 Placing the Mainboard/upstream group last keeps the Propeller 2 bootstrapping pins on the Mainboard side. This is required so the Mainboard can select the Propeller 2 bootstrap mode through the strapping pins and then load the Southbridge firmware. Exposing those pins through an Expansion Card port would prevent the Mainboard from performing any bootstrap.
 
