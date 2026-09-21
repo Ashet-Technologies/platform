@@ -11,9 +11,9 @@ Signal names prefixed with `/` are active-low.
 | Signal | Semantics |
 | --- | --- |
 | `GND` | Signal and power ground. |
-| `+12V` | 12 V power rail. |
-| `+5V` | 5 V power rail. |
-| `+3V3` | 3.3 V power rail. |
+| `+12V` | 12 V power rail, up to 500 mA. |
+| `+5V` | 5 V power rail, up to 500 mA. |
+| `+3V3` | 3.3 V power rail, up to 500 mA. |
 
 ## Management and Control
 
@@ -54,12 +54,16 @@ Signal names prefixed with `/` are active-low.
 
 ## USB
 
+USB0 and USB1 are Mainboard-slot **USB host ports**.
+
+The Backplane expects either a USB host or no connection on these pin pairs. A Mainboard must not expose a USB device on either pair.
+
 | Signal | Semantics |
 | --- | --- |
-| `USB0_D+` | D+ lane of USB0, driven by the Mainboard. |
-| `USB0_D-` | D− lane of USB0, driven by the Mainboard. |
-| `USB1_D+` | D+ lane of USB1, driven by the Mainboard. |
-| `USB1_D-` | D− lane of USB1, driven by the Mainboard. |
+| `USB0_D+` | D+ lane of USB0 host port. Driven by the Mainboard when USB0 is implemented; otherwise N.C. |
+| `USB0_D-` | D− lane of USB0 host port. Driven by the Mainboard when USB0 is implemented; otherwise N.C. |
+| `USB1_D+` | D+ lane of USB1 host port. Driven by the Mainboard when USB1 is implemented; otherwise N.C. |
+| `USB1_D-` | D− lane of USB1 host port. Driven by the Mainboard when USB1 is implemented; otherwise N.C. |
 
 ## A8 Dual-Function Pin
 
