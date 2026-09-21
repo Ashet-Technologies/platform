@@ -312,7 +312,7 @@ This table defines the Expansion Card-facing pinout. See [Pinout.md](Pinout.md) 
 |  31 | I2S_MCLK     | RESERVED6     |
 |  32 | GND          | GND           |
 
-Expansion-facing A8 is pulled up to `+3V3` through 10 kΩ. See [Mainboard.md](Mainboard.md) for its dual-function Slot-role behavior.
+Expansion Card-facing A8 is pulled up to `+3V3` through 10 kΩ. See [Mainboard.md](Mainboard.md) for its dual-function Slot-role behavior.
 
 ## Expansion Card EEPROM
 
