@@ -33,7 +33,7 @@ The driver can therefore derive its GP pin range and Hub RAM region directly fro
 
 Each GP lane is backed directly by a Propeller 2 I/O pin and exposes the full Smart Pin capability of that pin, subject to the electrical limits of the Expansion Bus.
 
-The resource partition is established by [Decision 0011](Decisions/0011-propeller2-port-resource-partition.md).
+The resource partition is established by [Decision 0011](Decisions/0011-propeller2-slot-resource-partition.md).
 
 ## Southbridge Management Core
 
