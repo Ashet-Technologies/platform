@@ -34,7 +34,7 @@ Signal names prefixed with `/` are active-low.
 
 | Signal | Semantics |
 | --- | --- |
-| `HSTX0..HSTX7` | Eight high-speed lanes connected directly to an Expansion Card slot. |
+| `HSTX0..HSTX7` | Eight high-speed lanes connected directly to an Expansion Slot. |
 
 ## Southbridge Interface
 
@@ -70,8 +70,8 @@ The Backplane expects either a USB host or no connection on these pin pairs. A M
 A8 is a dual-function pin whose bias depends on the slot role:
 
 - On a **Mainboard**, A8 is `/FAB_RESET` and is pulled down with 10 kΩ.
-- On an **Expansion Card slot**, A8 is pulled up to `+3V3` with 10 kΩ.
+- On an **Expansion Slot**, A8 is pulled up to `+3V3` with 10 kΩ.
 
-This allows a Mainboard to detect whether it is installed in a Mainboard slot or in an Expansion Card slot. A Mainboard that supports this capability may switch into **Not-so-mainboard** mode when installed in an Expansion Card slot, allowing it to operate as a coprocessor and accept commands or tasks from the host system.
+This allows a Mainboard to detect whether it is installed in a Mainboard slot or in an Expansion Slot. A Mainboard that supports this capability may switch into **Not-so-mainboard** mode when installed in an Expansion Slot, allowing it to operate as a coprocessor and accept commands or tasks from the host system.
 
 The exact Not-so-mainboard operating mode and protocol are not yet specified.
