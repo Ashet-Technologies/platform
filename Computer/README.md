@@ -59,9 +59,9 @@ For the Default Mainboard, the HSTX lanes have up to 300 MHz transmit capability
 
 The Backplane contains the Propeller 2 Southbridge and interconnects the Mainboard Slot and seven Expansion Slots.
 
-The Backplane uses one CH32V003 board-management controller per Expansion Slot. The controllers provide identical slot-management functionality at distinct I²C addresses.
+The Backplane uses one CH32V003 board-management controller per Expansion Slot. Expansion Slots 0 through 6 use I²C addresses `0x20` through `0x26`, respectively. A Backplane board-management controller uses `0x27`.
 
-The Backplane also contains the battery-backed real-time clock.
+The Backplane also contains a battery-backed **PCF8523** real-time clock at I²C address `0x68` and a Backplane configuration EEPROM at `0x57`.
 
 The Backplane does not contain the system power regulators. Instead, a separate internal **Power Board** connects to the Backplane and generates the required rails.
 
