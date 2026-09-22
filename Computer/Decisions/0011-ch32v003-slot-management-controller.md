@@ -6,7 +6,9 @@
 
 Use the **CH32V003** as the internal board-management controller for Expansion Slots.
 
-The Backplane may use one CH32V003 per Expansion Slot. Each controller provides the same management features and firmware interface, using a distinct I²C address.
+The Backplane may use one CH32V003 per Expansion Slot. Each controller provides the same management features and firmware interface.
+
+Expansion Slots 0 through 6 use I²C addresses `0x20` through `0x26`, respectively, as defined by the Platform system-management I²C allocation.
 
 ## Rationale
 
@@ -18,5 +20,5 @@ Using one controller per Expansion Slot gives every slot the same local manageme
 
 - The seven Expansion Slots can use seven identical CH32V003 management controllers.
 - Slot-management behavior can be implemented once and reused for every slot.
-- Each controller must have a unique I²C address on the relevant management bus.
+- Expansion Slot controller addresses map directly from the zero-based slot number: `0x20 + slot`.
 - ADC-based monitoring functions are available without a separate ADC device.
