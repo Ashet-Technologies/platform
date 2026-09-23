@@ -10,7 +10,7 @@
 - **Southbridge:** The Propeller 2 on the Backplane dispatching data between the Mainboard and Expansion Cards. Provides the main electrical expansion interface.
 - **Mainboard:** A Card containing the CPU and RAM of the system and running the OS.
 - **Expansion Card:** A Card that provides additional, user-selectable features to the computer.
-- **Not-so-mainboard:** A Mainboard that supports being plugged into an Expansion Slot and can be used as a coprocessor of sorts. It accepts commands or tasks when used in an Expansion Slot.
+- **Not-so-mainboard:** A Mainboard operating in an Expansion Slot using the Platform's Not-so-mainboard mode. Read the name as **"(not-so-main) board"**, not as **"not-so (mainboard)"**. In this mode the Mainboard presents itself to the host as an Expansion Card and provides its own Low-Level-Driver through the emulated metadata EEPROM.
 - **Low-Level-Driver:** Firmware running on the Propeller 2 Cog associated with an Expansion Slot. It translates packet/datagram traffic into the card-specific electrical protocol and does not directly provide OS functionality.
 - **Expansion Card Driver:** Driver code running on the Mainboard that exposes an Expansion Card's functionality to the Mainboard operating system. It communicates with the card through the Southbridge/Low-Level-Driver path and controls Mainboard-side interfaces such as HSTX.
 - **Cog:** One of the eight CPUs inside the Propeller 2. Use **Cog**, not **Core**, for Propeller 2 CPUs.
