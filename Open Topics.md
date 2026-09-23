@@ -6,46 +6,49 @@ This document tracks high-level Platform and Computer design areas that are inte
 
 ### Mainboard ↔ Backplane Interface
 
-The logical and electrical Mainboard↔Backplane interface beyond the connector pin allocation is not yet specified.
-
-Open work includes:
-
-- bootstrap sequence
-- reset behavior
-- timing requirements
-- electrical limits
-- ownership and direction of configurable signals
-- firmware-defined transport/protocol constraints
-
-### Not-so-mainboard Mode
-
-The A8 detection mechanism is defined, but the behavior of a Mainboard when installed in an Expansion Slot is not yet specified.
-
-Open work includes:
-
-- discovery
-- boot behavior
-- command/task interface
-- lifecycle
-- error handling
-- interaction with the host Mainboard
-
-### Fabric Reset Boot Behavior
-
-Mainboards must sample `/FAB_RESET` during startup.
-
-If `/FAB_RESET` is high at boot, the Mainboard must not enter normal Mainboard operation. It must instead enter either:
-
-- a high-impedance state, or
-- Not-so-mainboard mode
+The startup mode-selection behavior and required high-impedance states are now defined in [Platform/Mainboard.md](Platform/Mainboard.md).
 
 Still to define:
 
-- the exact point during startup when `/FAB_RESET` is sampled
-- whether high-impedance mode or Not-so-mainboard mode is selected automatically
-- which signals must be high-impedance
-- behavior if `/FAB_RESET` changes after the initial sample
-- reset and recovery behavior
+- the exact electrical timing requirements for sampling `/FAB_RESET`
+- behavior if `/FAB_RESET` changes after the initial startup sample
+- reset and recovery behavior after faults
+- remaining timing requirements for mode transitions and interface enablement
+- any additional electrical limits not already covered by the connector specifications
+- firmware-defined transport/protocol constraints outside the defined Not-so-mainboard bootstrap behavior
+
+### Not-so-mainboard Mode
+
+The basic Not-so-mainboard boot behavior is defined in [Platform/Mainboard.md](Platform/Mainboard.md):
+
+- `/FAB_RESET` HIGH selects Not-so-mainboard mode on supporting Mainboards
+- USB and HSTX start high-impedance
+- the Mainboard emulates the Expansion Card EEPROM over I²C
+- the emulated EEPROM provides a card-specific Low-Level-Driver
+- GP lanes remain high-impedance while `/RESET` is LOW
+- negotiated GP, Audio, and High-Speed interfaces may be enabled later
+
+Still to define:
+
+- the host-visible lifecycle after the Low-Level-Driver is loaded
+- the command/task interface presented by a Not-so-mainboard
+- error handling and recovery behavior
+- the exact semantics of implementation-specific EEPROM extensions at or above `0x2000`
+- whether additional standardized capabilities should be defined for Not-so-mainboards
+
+### Not-so-mainboard Reset and Initialization Sequence
+
+The current Expansion Slot activation sequence asserts `/RESET` before power-on and reads the Expansion Card EEPROM while `/RESET` remains asserted.
+
+A Not-so-mainboard must nevertheless emulate that EEPROM while installed in an Expansion Slot. A hard reset driven directly by `/RESET` may therefore prevent the EEPROM emulation required for discovery.
+
+Reconsider the initialization/reset sequence. In particular, define:
+
+- whether a Not-so-mainboard must soft-sample `/RESET` instead of using it as a hard reset input
+- whether the Backplane must release `/RESET` before EEPROM discovery for Not-so-mainboards
+- how a host can distinguish a conventional Expansion Card from a Not-so-mainboard before EEPROM discovery
+- how reset semantics apply after the Not-so-mainboard Low-Level-Driver is active
+- whether the current requirement that a card enter a power-on-equivalent safe state while `/RESET` is asserted needs a Not-so-mainboard-specific exception
 
 ### Standard HSTX Pinouts
 
@@ -178,9 +181,13 @@ Investigate distributing `MCLK`, `BCLK`, and `WCLK` as shared system-wide audio 
 
 Goal: provide deterministic audio synchronization between multiple Expansion Cards.
 
-### Activation Sequence Diagram
+### Activation Sequence
 
-Add a Mermaid diagram for the Expansion Card activation sequence: assert reset, power on, read/validate EEPROM, optional clock setup, optional HSTX setup, optional Audio setup, Low-Level-Driver loading, Expansion Card Driver loading, then reset release.
+The current Expansion Card activation sequence conflicts with the newly defined Not-so-mainboard EEPROM-emulation requirement because EEPROM discovery occurs while `/RESET` is asserted.
+
+Revisit the sequence together with the Not-so-mainboard reset/init topic before treating the current order as final.
+
+After the sequence is resolved, add a Mermaid diagram covering both conventional Expansion Cards and Not-so-mainboards.
 
 ### Standard Interface Terminology
 
