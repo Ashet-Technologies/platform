@@ -115,8 +115,6 @@ Goals include:
 
 The PCA9547 provides eight downstream I²C channels. Seven channels are assigned one-to-one to the seven Expansion Slots. The eighth channel forms the Backplane-local system-management I²C subnet.
 
-The connected device classes and address assignments are defined in [Platform/System Management I2C.md](Platform/System%20Management%20I2C.md).
-
 Still to define:
 
 - bus speed, pull-ups, and power-domain behavior
