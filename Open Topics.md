@@ -6,8 +6,6 @@ This document tracks high-level Platform and Computer design areas that are inte
 
 ### Mainboard ↔ Backplane Interface
 
-The startup mode-selection behavior and required high-impedance states are now defined in [Platform/Mainboard.md](Platform/Mainboard.md).
-
 Still to define:
 
 - the exact electrical timing requirements for sampling `/FAB_RESET`
@@ -16,19 +14,6 @@ Still to define:
 - remaining timing requirements for mode transitions and interface enablement
 - any additional electrical limits not already covered by the connector specifications
 - firmware-defined transport/protocol constraints outside the defined Not-so-mainboard bootstrap behavior
-
-### Not-so-mainboard Mode
-
-The basic Not-so-mainboard boot behavior is defined in [Platform/Mainboard.md](Platform/Mainboard.md):
-
-- `/FAB_RESET` HIGH selects Not-so-mainboard mode on supporting Mainboards
-- USB, HSTX, and I²S start high-impedance
-- the Mainboard emulates the Expansion Card EEPROM over I²C
-- the emulated EEPROM provides a card-specific Low-Level-Driver
-- GP lanes remain high-impedance while `/RESET` is LOW
-- negotiated GP, Audio, and High-Speed interfaces may be enabled later
-
-A Mainboard in Not-so-mainboard mode is host-visible as a regular Expansion Card and does not require a distinct host-side lifecycle or protocol.
 
 ### Not-so-mainboard Reset and Initialization Sequence
 
@@ -45,8 +30,6 @@ Reconsider the initialization/reset sequence. In particular, define:
 
 ### Standard HSTX Pinouts
 
-The HSTX interface model and standard interface classes are defined, but the exact standard pin mappings are not.
-
 Interfaces requiring definitions include:
 
 - DVI
@@ -56,11 +39,8 @@ Interfaces requiring definitions include:
 - MIPI-DSI, 2 lanes
 - MIPI-CSI
 
-The Custom and Unused interface semantics are already defined at a high level.
 
 ### Expansion Card Mechanical Constraints
-
-The PCI Express x4 connector is fixed, but the remaining mechanical envelope is not yet specified.
 
 Still to define:
 
@@ -70,8 +50,6 @@ Still to define:
 - retention details
 
 ### Expansion Power Electrical Details
-
-The available rails and per-card current limits are defined.
 
 Still to define:
 
@@ -189,8 +167,6 @@ Define terminology that makes this distinction explicit.
 
 ### Expansion Card EEPROM Versioning
 
-Metadata version 1 is defined.
-
 Still to define:
 
 - handling of unknown versions
@@ -226,9 +202,7 @@ Still to define:
 
 ### Platform Electrical Compliance
 
-Nominal levels and several frequency limits are defined, but a general electrical compliance specification is still missing.
-
-Potential items include:
+Still to define:
 
 - logic thresholds
 - drive strength
@@ -250,9 +224,7 @@ Still to define:
 
 ### Ashet HSV Background
 
-The Ashet HSV encoding and its Platform-wide use are specified.
-
-The historical/design background of the format is still to be documented, including the exploration that led to the encoding and why it was selected over alternative 8-bit color representations.
+Document the historical/design background of the format, including the exploration that led to the encoding and why it was selected over alternative 8-bit color representations.
 
 ## Computer
 
