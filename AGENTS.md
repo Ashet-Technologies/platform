@@ -15,3 +15,10 @@
 - Do not use `Card Port`; use `Slot` or the specific Slot type.
 - Do not use `Mainboard Port`; use `Mainboard Slot`.
 - A Propeller 2 CPU is called a **Cog**. Do not call a Propeller 2 Cog a **Core**.
+
+## Documentation Structure
+
+- Normative documents must contain only decided platform/computer behavior and specifications.
+- Do not include open questions, unresolved alternatives, TODO-style design discussion, or references to unresolved topics in normative documents.
+- Track unresolved design work only in `Open Topics.md`.
+- Remove completed topics from `Open Topics.md` instead of keeping status/history text about what is already defined.
