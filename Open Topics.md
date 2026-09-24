@@ -22,19 +22,13 @@ Still to define:
 The basic Not-so-mainboard boot behavior is defined in [Platform/Mainboard.md](Platform/Mainboard.md):
 
 - `/FAB_RESET` HIGH selects Not-so-mainboard mode on supporting Mainboards
-- USB and HSTX start high-impedance
+- USB, HSTX, and I²S start high-impedance
 - the Mainboard emulates the Expansion Card EEPROM over I²C
 - the emulated EEPROM provides a card-specific Low-Level-Driver
 - GP lanes remain high-impedance while `/RESET` is LOW
 - negotiated GP, Audio, and High-Speed interfaces may be enabled later
 
-Still to define:
-
-- the host-visible lifecycle after the Low-Level-Driver is loaded
-- the command/task interface presented by a Not-so-mainboard
-- error handling and recovery behavior
-- the exact semantics of implementation-specific EEPROM extensions at or above `0x2000`
-- whether additional standardized capabilities should be defined for Not-so-mainboards
+A Mainboard in Not-so-mainboard mode is host-visible as a regular Expansion Card and does not require a distinct host-side lifecycle or protocol.
 
 ### Not-so-mainboard Reset and Initialization Sequence
 
@@ -46,7 +40,6 @@ Reconsider the initialization/reset sequence. In particular, define:
 
 - whether a Not-so-mainboard must soft-sample `/RESET` instead of using it as a hard reset input
 - whether the Backplane must release `/RESET` before EEPROM discovery for Not-so-mainboards
-- how a host can distinguish a conventional Expansion Card from a Not-so-mainboard before EEPROM discovery
 - how reset semantics apply after the Not-so-mainboard Low-Level-Driver is active
 - whether the current requirement that a card enter a power-on-equivalent safe state while `/RESET` is asserted needs a Not-so-mainboard-specific exception
 
@@ -181,13 +174,9 @@ Investigate distributing `MCLK`, `BCLK`, and `WCLK` as shared system-wide audio 
 
 Goal: provide deterministic audio synchronization between multiple Expansion Cards.
 
-### Activation Sequence
+### Activation Sequence Diagram
 
-The current Expansion Card activation sequence conflicts with the newly defined Not-so-mainboard EEPROM-emulation requirement because EEPROM discovery occurs while `/RESET` is asserted.
-
-Revisit the sequence together with the Not-so-mainboard reset/init topic before treating the current order as final.
-
-After the sequence is resolved, add a Mermaid diagram covering both conventional Expansion Cards and Not-so-mainboards.
+Add a Mermaid diagram for the Expansion Card activation sequence: assert reset, power on, read/validate EEPROM, optional clock setup, optional HSTX setup, optional Audio setup, Low-Level-Driver loading, Expansion Card Driver loading, then reset release.
 
 ### Standard Interface Terminology
 
