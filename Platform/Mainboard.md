@@ -39,7 +39,7 @@ On every boot, a Mainboard must sample `/FAB_RESET`.
   - a Mainboard that supports **Not-so-mainboard mode** must boot into that mode
   - a Mainboard that does not support Not-so-mainboard mode must enter **inert mode**
 
-A Mainboard may react to `/RESET` going low. If that reaction causes the Mainboard to boot again, it must resample `/FAB_RESET`.
+A Mainboard **must** react to `/RESET` going low. If that reset handling causes the Mainboard to boot again, it must resample `/FAB_RESET`.
 
 ### Inert Mode
 
@@ -59,6 +59,9 @@ After detecting `/FAB_RESET` HIGH, a Mainboard entering Not-so-mainboard mode mu
 
 - `USB0_*` and `USB1_*`
 - `HSTX0..HSTX7`
+- `I2S_*`
+
+To the host, a Mainboard operating in Not-so-mainboard mode is indistinguishable from a regular Expansion Card.
 
 The Mainboard must switch its I²C interface into device mode and emulate the Expansion Card metadata EEPROM at address `0x57`, using the format defined in [Expansion Card EEPROM.md](Expansion%20Card%20EEPROM.md).
 
@@ -68,7 +71,9 @@ The standard EEPROM image occupies the platform-defined address space below the 
 
 While `/RESET` is LOW, the Mainboard must keep `GP0..GP7` high-impedance. After `/RESET` is HIGH, the Mainboard may establish the Low-Level-Driver-defined interface on those lanes.
 
-The Mainboard may enable I²S later only if the Expansion Slot provides the Audio feature and driver negotiation has enabled its use. Until then, the I²S interface remains disabled.
+The Mainboard may enable I²S later only if the Expansion Slot provides the Audio feature and driver negotiation has enabled its use. Until then, all I²S pins remain high-impedance.
+
+When I²S is enabled in Not-so-mainboard mode, `I2S_MCLK`, `I2S_BCLK`, and `I2S_WCLK` are inputs driven by the host system. The I²S data-lane directions follow the Expansion Card semantics defined by the negotiated Audio profile.
 
 The Mainboard may enable HSTX later only if the Expansion Slot provides the High-Speed feature and driver negotiation has enabled its use. Until then, `HSTX0..HSTX7` remain high-impedance.
 
@@ -88,13 +93,13 @@ The current Expansion Slot initialization sequence reads the metadata EEPROM whi
 
 ## Audio Bus
 
-| Signal | Semantics |
-| --- | --- |
-| `I2S_SDIN` | Default input data lane of the Audio bus. |
-| `I2S_SDOUT` | Default output data lane of the Audio bus. |
-| `I2S_BCLK` | Bit clock of the Audio bus, driven by the Mainboard when the Audio interface is enabled. |
-| `I2S_WCLK` | Word clock of the Audio bus, driven by the Mainboard when the Audio interface is enabled. |
-| `I2S_MCLK` | Master clock of the Audio bus, driven by the Mainboard when the Audio interface is enabled. Its frequency must be 256..512 times the frequency of `I2S_WCLK`, up to 50 MHz. |
+| Signal | Regular Mainboard mode | Not-so-mainboard mode |
+| --- | --- | --- |
+| `I2S_SDIN` | Default input data lane. | Default output data lane; direction follows the negotiated Expansion Card Audio profile. |
+| `I2S_SDOUT` | Default output data lane. | Default input data lane; direction follows the negotiated Expansion Card Audio profile. |
+| `I2S_BCLK` | Bit clock output, driven by the Mainboard when the Audio interface is enabled. | Bit clock input, driven by the host system. |
+| `I2S_WCLK` | Word clock output, driven by the Mainboard when the Audio interface is enabled. | Word clock input, driven by the host system. |
+| `I2S_MCLK` | Master clock output, driven by the Mainboard when the Audio interface is enabled. Its frequency must be 256..512 times the frequency of `I2S_WCLK`, up to 50 MHz. | Master clock input, driven by the host system. |
 
 ## USB
 
