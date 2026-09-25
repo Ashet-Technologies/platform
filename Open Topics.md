@@ -85,16 +85,6 @@ Still to define:
 - host-side ABI
 - lifecycle and error behavior
 
-### Propeller 2 Per-Slot Memory Layout
-
-The top-level Hub RAM map assigns one 64 KiB region to each Expansion Slot, but the internal use of those regions is not fully specified.
-
-Still to define:
-
-- FIFO allocations within each 64 KiB Expansion Slot region
-- packet FIFO ring-buffer representation, framing, queue depth, signaling, and synchronization
-- ownership and consistency rules for non-FIFO shared-memory data
-
 ### Propeller 2 Cog Configuration Block Layout
 
 Each Cog has a 2048-byte configuration block in the Hub RAM memory map.
