@@ -92,7 +92,7 @@ Each Cog has a 2048-byte configuration block in the Hub RAM memory map.
 Still to define:
 
 - internal binary layout and field offsets
-- FIFO descriptor representation and channel metadata
+- FIFO descriptor placement, enumeration, and channel metadata
 - representation of other per-Cog or per-Slot properties
 - reserved fields and versioning/evolution rules
 

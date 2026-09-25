@@ -17,6 +17,8 @@ If a driver needs more independent logical channels than the available FIFOs pro
 
 The Mainboard does not communicate directly with the Low-Level-Driver interface. The Management Cog forwards data between the Mainboard-facing interface and the per-Slot Low-Level-Driver interface.
 
+The concrete packet-ring representation and synchronization protocol are specified in [Low Level Drivers.md](../Low%20Level%20Drivers.md#packet-fifo-design).
+
 ## Rationale
 
 In-memory FIFOs/ring buffers are a common way to communicate between CPUs that share memory.
