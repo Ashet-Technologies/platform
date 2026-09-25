@@ -35,6 +35,46 @@ Each GP lane is backed directly by a Propeller 2 I/O pin and exposes the full Sm
 
 The resource partition is established by [Decision 0011](Decisions/0011-propeller2-slot-resource-partition.md).
 
+
+### Hub RAM Memory Map
+
+The complete 512 KiB Propeller 2 Hub RAM address space is partitioned as follows:
+
+| Address range | Size | Purpose |
+| --- | ---: | --- |
+| `0x00000..0x0FFFF` | 64 KiB | Expansion Slot 0 |
+| `0x10000..0x1FFFF` | 64 KiB | Expansion Slot 1 |
+| `0x20000..0x2FFFF` | 64 KiB | Expansion Slot 2 |
+| `0x30000..0x3FFFF` | 64 KiB | Expansion Slot 3 |
+| `0x40000..0x4FFFF` | 64 KiB | Expansion Slot 4 |
+| `0x50000..0x5FFFF` | 64 KiB | Expansion Slot 5 |
+| `0x60000..0x6FFFF` | 64 KiB | Expansion Slot 6 |
+| `0x70000..0x70FFF` | 4 KiB | Cog 0 program/configuration block |
+| `0x71000..0x71FFF` | 4 KiB | Cog 1 program/configuration block |
+| `0x72000..0x72FFF` | 4 KiB | Cog 2 program/configuration block |
+| `0x73000..0x73FFF` | 4 KiB | Cog 3 program/configuration block |
+| `0x74000..0x74FFF` | 4 KiB | Cog 4 program/configuration block |
+| `0x75000..0x75FFF` | 4 KiB | Cog 5 program/configuration block |
+| `0x76000..0x76FFF` | 4 KiB | Cog 6 program/configuration block |
+| `0x77000..0x77FFF` | 4 KiB | Cog 7 program/configuration block |
+| `0x78000..0x7BFFF` | 16 KiB | Unallocated |
+| `0x7C000..0x7FFFF` | 16 KiB | Reserved |
+
+Each Cog program/configuration block is 4096 bytes and is split evenly:
+
+- the first 2048 bytes are the Cog program slot
+- the second 2048 bytes are the Cog configuration block
+
+For Cog `n`:
+
+```text
+cog_block_base = 0x70000 + n * 0x1000
+program_base   = cog_block_base
+config_base    = cog_block_base + 0x800
+```
+
+The final 16 KiB at `0x7C000..0x7FFFF` is reserved as one opaque block.
+
 ## Southbridge Management Cog
 
 The **Southbridge Management Cog** is the Propeller 2 Cog responsible for managing the Low-Level-Drivers and their communication with the rest of the Southbridge.
