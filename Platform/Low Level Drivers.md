@@ -76,7 +76,7 @@ code_base   = 0x70000 + n * 0x1000
 config_base = code_base + 0x800
 ```
 
-The internal layout of each 64 KiB Cog Data area is entirely defined by that Cog's Low-Level-Driver. FIFO storage must be allocated inside the associated Cog Data area, but has no additional placement requirement. FIFO configuration is stored in the associated Cog Config area.
+The internal layout of each 64 KiB Cog Data area is otherwise defined by that Cog's Low-Level-Driver. FIFO storage must be allocated inside the associated Cog Data area and use the packet-ring representation specified below, but has no additional placement requirement. FIFO configuration and state are stored in the associated Cog Config area.
 
 A Low-Level-Driver must only access its associated Cog Data and Cog Config areas. No additional ownership or partitioning rules are imposed on the contents of the Cog Data area.
 
@@ -111,7 +111,7 @@ The concrete ring-buffer representation and synchronization protocol are specifi
 
 FIFO storage for an Expansion Slot must be allocated from the associated Cog Data area.
 
-The exact placement and representation of FIFO storage within that 64 KiB area are defined by the Low-Level-Driver. FIFO configuration is stored in the associated Cog Config area.
+The exact placement of FIFO storage within that 64 KiB area is defined by the Low-Level-Driver. FIFO storage uses the packet-ring representation specified below. FIFO configuration and state are stored in the associated Cog Config area.
 
 ## Packet FIFO Design
 
