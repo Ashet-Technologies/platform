@@ -105,7 +105,7 @@ Each packet has a payload size of:
 1..2048 bytes
 ```
 
-The concrete ring-buffer representation and synchronization protocol are specified in [Packet FIFO Design](#packet-fifo-design).
+The concrete ring-buffer representation and synchronization protocol are specified in [Packet FIFO Design](#packet-fifo-design). Additional wakeup or notification signaling, if any, is not yet specified.
 
 ### FIFO Memory
 
