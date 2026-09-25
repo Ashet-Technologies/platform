@@ -85,18 +85,26 @@ Still to define:
 - host-side ABI
 - lifecycle and error behavior
 
-### Propeller 2 Memory Map
+### Propeller 2 Per-Slot Memory Layout
 
-Fully define the Southbridge Propeller 2 Hub RAM memory map.
+The top-level Hub RAM map assigns one 64 KiB region to each Expansion Slot, but the internal use of those regions is not fully specified.
 
-This includes:
+Still to define:
 
-- the seven 64 KiB Expansion Slot Cog regions
-- Management Cog memory
-- FIFO allocations inside each Expansion region
-- shared-memory regions
-- firmware/code placement
-- any reserved or global Southbridge memory
+- FIFO allocations within each 64 KiB Expansion Slot region
+- packet FIFO ring-buffer representation, framing, queue depth, signaling, and synchronization
+- ownership and consistency rules for non-FIFO shared-memory data
+
+### Propeller 2 Cog Configuration Block Layout
+
+Each Cog has a 2048-byte configuration block in the Hub RAM memory map.
+
+Still to define:
+
+- internal binary layout and field offsets
+- FIFO descriptor representation and channel metadata
+- representation of other per-Cog or per-Slot properties
+- reserved fields and versioning/evolution rules
 
 ### Low-Level Driver Dynamic Linking
 
