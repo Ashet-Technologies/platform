@@ -1,6 +1,6 @@
 # System Management I²C Subnet
 
-The Backplane-local system-management I²C subnet is connected to the eighth downstream channel of the Backplane I²C multiplexer. The other seven downstream channels are assigned one-to-one to Expansion Slots 0 through 6.
+The Backplane-local system-management I²C subnet contains the Backplane and Expansion Slot management devices used by the Mainboard.
 
 The subnet reserves the following 7-bit I²C addresses:
 
@@ -16,6 +16,7 @@ The subnet reserves the following 7-bit I²C addresses:
 | `0x27` | Backplane board-management controller |
 | `0x57` | Backplane configuration EEPROM |
 | `0x68` | Real-time clock |
+| `0x77` | Reserved by the Platform |
 
 The RTC allocation at `0x68` is compatible with both the PCF8523 and DS1307. These devices use the same address and are therefore alternative RTC implementations, not simultaneously addressable devices on this subnet.
 

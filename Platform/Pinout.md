@@ -46,7 +46,7 @@ The Mainboard-facing signal semantics are defined in [Mainboard.md](Mainboard.md
 ## Notes
 
 - `/FAB_RESET`, `/SLOT_USB0`, `/SLOT_USB1`, `USB0_D+`, `USB0_D-`, `USB1_D+`, and `USB1_D-` are present only in the Mainboard-facing mapping and are not part of the generic Expansion Bus signal specification.
-- `/FAB_RESET` is pulled down by default with a 10 kΩ resistor.
+- In the Mainboard-facing mapping, `/FAB_RESET` is pulled down by the Mainboard Slot with 10 kΩ. In the Expansion Card-facing mapping, the corresponding A8 pin is always pulled up to `+3V3` with 10 kΩ.
 - The Expansion Card-facing mapping exposes seven reserved signals: `RESERVED0` through `RESERVED6`.
 - `CLK` is the global 48 MHz platform clock and has a 48 MHz frequency limit.
 - `HSTX0` through `HSTX7` are bidirectional high-speed lanes.

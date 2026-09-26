@@ -1,10 +1,10 @@
-# 0015 — Expansion Card Slot Guide Rails
+# 0015 — Expansion Slot Guide Rails
 
 **Status:** Accepted
 
 ## Decision
 
-Each Expansion Card Slot must include **guard rails** that guide an Expansion Card into its PCI Express x4 connector during insertion.
+Each Expansion Slot must include **guard rails** that guide an Expansion Card into its PCI Express x4 connector during insertion.
 
 ## Rationale
 
@@ -16,7 +16,7 @@ The guard rails constrain and align the card before its edge reaches the connect
 
 ## Consequences
 
-- Expansion Card Slots include mechanical guide rails for Expansion Cards.
+- Expansion Slots include mechanical guide rails for Expansion Cards.
 - Expansion Cards are aligned with the PCI Express x4 connector before insertion into the connector.
 - Blind card insertion is substantially easier.
 - The guide rails contribute to the snug mechanical fit of an installed Expansion Card.

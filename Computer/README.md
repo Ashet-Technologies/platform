@@ -125,9 +125,9 @@ The computer design uses a stock ABS enclosure with approximate external dimensi
 
 The rear panel provides a mechanical power switch and a 12 V barrel-jack power input.
 
-Each Expansion Card Slot includes guard rails that guide an Expansion Card into its PCI Express x4 connector. The rails align the card before it reaches the approximately 2 mm connector slot, avoiding difficult blind alignment during insertion.
+Each Expansion Slot includes guard rails that guide an Expansion Card into its PCI Express x4 connector. The rails align the card before it reaches the approximately 2 mm connector slot, avoiding difficult blind alignment during insertion.
 
-Expansion Cards are installed without retention screws. The PCI Express x4 connector and Expansion Card Slot guide rails provide sufficient retention, and omitting the screw hardware frees 10 mm of vertical card-slot space for connectors.
+Expansion Cards are installed without retention screws. The PCI Express x4 connector and Expansion Slot guide rails provide sufficient retention, and omitting the screw hardware frees 10 mm of vertical card-slot space for connectors.
 
 ## Video
 

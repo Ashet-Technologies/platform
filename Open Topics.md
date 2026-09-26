@@ -85,6 +85,21 @@ Still to define:
 - host-side ABI
 - lifecycle and error behavior
 
+### Packet FIFO Operation Sequencing
+
+Replace the prose-only description of packet FIFO producer and consumer operations with precise pseudocode.
+
+The pseudocode should define the complete sequencing and failure behavior for:
+
+- producer allocation, wrapping, payload access, commit, and abort
+- consumer dequeue, wrapping, payload access, release
+- free-space validation before any producer write that could overlap consumer-owned storage
+- reconstruction of tentative positions from the published sequence counters
+- ownership and visibility transitions
+- the one-outstanding-operation-per-FIFO constraint
+
+The goal is to make the exact algorithm unambiguous without changing the existing FIFO format or concurrency model.
+
 ### Propeller 2 Cog Configuration Block Layout
 
 Each Cog has a 2048-byte configuration block in the Hub RAM memory map.
@@ -219,6 +234,17 @@ Still to define:
 - feature negotiation
 
 ## Computer
+
+### Default Mainboard ENC624J600 Host Interface
+
+The Default Mainboard uses an ENC624J600 Ethernet controller, but the host-side protocol is not yet selected.
+
+Still to define:
+
+- whether the RP2350 communicates with the ENC624J600 over SPI or the parallel host interface
+- the concrete bus width and signaling mode if the parallel interface is selected
+- the resulting RP2350 pin assignment and timing requirements
+- the throughput target that drives the selection
 
 ### Default Mainboard Flash Selection
 

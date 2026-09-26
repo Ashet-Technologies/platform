@@ -68,7 +68,7 @@ For non-gray colors, the 3-bit hue field selects one of eight hues in 45° steps
 | 6 | 270° | Purple |
 | 7 | 315° | Magenta |
 
-Hue has no special interpretation when saturation is non-zero.
+Hue has no interpretation when saturation is zero.
 
 ## Value
 
