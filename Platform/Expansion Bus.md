@@ -106,7 +106,6 @@ An Expansion Card must not back-power an unpowered slot through a power rail or 
 
 When slot power is disabled, card-facing signals should be high-impedance and the card should not rely on host-side bias being present.
 
-Further electrical requirements such as rail tolerances, detailed sequencing, and inrush limits are not yet specified.
 
 Host-side biasing of `/PRESENT` is not part of the Expansion Card electrical contract.
 
@@ -131,7 +130,7 @@ A card must not create bus contention when leaving reset.
 
 ### Hot Swap
 
-An implementation may support hot-swapping Expansion Cards, but hot-swap support is not required for platform compatibility. Hot-swap sequencing and electrical behavior are not yet specified.
+An implementation may support hot-swapping Expansion Cards, but hot-swap support is not required for platform compatibility.
 
 ### Slot Clock
 
@@ -247,7 +246,6 @@ The Platform defines the following standard interface classes:
 | MIPI-DSI (2 lane) | Standard two-lane MIPI-DSI HSTX interface |
 | MIPI-CSI | Standard MIPI-CSI HSTX interface |
 
-The exact pin mappings and detailed electrical/protocol requirements of the standard HSTX interfaces are not yet specified.
 
 ### Activation Sequence
 

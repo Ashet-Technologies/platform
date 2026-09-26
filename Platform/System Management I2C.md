@@ -22,4 +22,3 @@ The RTC allocation at `0x68` is compatible with both the PCF8523 and DS1307. The
 
 The rationale for the board-management-controller address range is documented in [Decisions/0016-board-management-i2c-address-range.md](Decisions/0016-board-management-i2c-address-range.md).
 
-Bus speed, pull-ups, power-domain behavior, discovery/initialization behavior, and reset/failure behavior remain unspecified.

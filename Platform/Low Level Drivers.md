@@ -105,7 +105,7 @@ Each packet has a payload size of:
 1..2048 bytes
 ```
 
-The concrete ring-buffer representation and synchronization protocol are specified in [Packet FIFO Design](#packet-fifo-design). Additional wakeup or notification signaling, if any, is not yet specified.
+The concrete ring-buffer representation and synchronization protocol are specified in [Packet FIFO Design](#packet-fifo-design).
 
 ### FIFO Memory
 
@@ -146,7 +146,6 @@ ring_mask = ring_size - 1
 
 The FIFO storage must fit completely inside the associated 64 KiB Cog Data area and must be word-aligned.
 
-The exact placement and enumeration of FIFO descriptors within the 2 KiB Cog Config area are not yet specified.
 
 The sequence counters are 16-bit byte positions that wrap naturally modulo `2^16`. Because the largest FIFO is 32 KiB, the distance between commit and release is always unambiguous:
 
@@ -250,4 +249,3 @@ After this relocation:
 - Cog 0 becomes available for Expansion Slot 0.
 - Cogs 0..6 are available for the seven Low-Level-Drivers.
 
-The exact relocation mechanism is not yet specified.

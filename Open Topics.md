@@ -75,7 +75,7 @@ For implementations that provide it, the following still need definition:
 
 ### Standard Low-Level Driver Interfaces
 
-The EEPROM can select a platform-standard low-level driver interface instead of embedding card-specific firmware.
+The EEPROM can select a platform-standard low-level driver interface independently of whether it also embeds card-specific firmware.
 
 Still to define:
 
@@ -97,6 +97,7 @@ The pseudocode should define the complete sequencing and failure behavior for:
 - reconstruction of tentative positions from the published sequence counters
 - ownership and visibility transitions
 - the one-outstanding-operation-per-FIFO constraint
+- whether explicit wakeup or notification signaling is required in addition to the shared FIFO state
 
 The goal is to make the exact algorithm unambiguous without changing the existing FIFO format or concurrency model.
 
