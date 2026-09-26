@@ -218,10 +218,6 @@ Still to define:
 - reserved-field evolution
 - feature negotiation
 
-### Ashet HSV Background
-
-Document the historical/design background of the format, including the exploration that led to the encoding and why it was selected over alternative 8-bit color representations.
-
 ## Computer
 
 ### Default Mainboard Flash Selection
