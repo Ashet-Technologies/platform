@@ -97,6 +97,7 @@ The pseudocode should define the complete sequencing and failure behavior for:
 - reconstruction of tentative positions from the published sequence counters
 - ownership and visibility transitions
 - the one-outstanding-operation-per-FIFO constraint
+- whether explicit wakeup or notification signaling is required in addition to the shared FIFO state
 
 The goal is to make the exact algorithm unambiguous without changing the existing FIFO format or concurrency model.
 
@@ -110,6 +111,16 @@ Still to define:
 - FIFO descriptor placement, enumeration, and channel metadata
 - representation of other per-Cog or per-Slot properties
 - reserved fields and versioning/evolution rules
+
+### Southbridge Management Cog Bootstrap Relocation
+
+The Southbridge Management Cog starts in Cog 0 during Propeller 2 bootstrap and must end up running in Cog 7 before Cog 0 is used for Expansion Slot 0.
+
+Still to define:
+
+- the exact relocation/startup mechanism
+- what state must be transferred or reconstructed when Cog 7 starts
+- when Cog 0 becomes safe to reuse for the Expansion Slot 0 Low-Level-Driver
 
 ### Low-Level Driver Dynamic Linking
 
