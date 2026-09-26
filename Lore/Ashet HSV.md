@@ -49,7 +49,7 @@ Predetermined 256-color palettes from [Lospec](https://lospec.com/palette-list) 
 
 However, there was an important design requirement: the palette should be **computable**.
 
-Given a quantized color, software should be able to calculate its 8-bit index directly. It should not need to search an arbitrary 256-entry palette for the closest match.
+Given an RGB color, software should be able to calculate its 8-bit index directly. It should not need to search an arbitrary 256-entry palette for the closest match.
 
 That requirement ruled out most hand-designed palettes, including many of the visually strongest candidates.
 
