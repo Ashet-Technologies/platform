@@ -75,7 +75,7 @@ For implementations that provide it, the following still need definition:
 
 ### Standard Low-Level Driver Interfaces
 
-The EEPROM can select a platform-standard low-level driver interface instead of embedding card-specific firmware.
+The EEPROM can select a platform-standard low-level driver interface independently of whether it also embeds card-specific firmware.
 
 Still to define:
 
@@ -111,16 +111,6 @@ Still to define:
 - FIFO descriptor placement, enumeration, and channel metadata
 - representation of other per-Cog or per-Slot properties
 - reserved fields and versioning/evolution rules
-
-### Southbridge Management Cog Bootstrap Relocation
-
-The Southbridge Management Cog starts in Cog 0 during Propeller 2 bootstrap and must end up running in Cog 7 before Cog 0 is used for Expansion Slot 0.
-
-Still to define:
-
-- the exact relocation/startup mechanism
-- what state must be transferred or reconstructed when Cog 7 starts
-- when Cog 0 becomes safe to reuse for the Expansion Slot 0 Low-Level-Driver
 
 ### Low-Level Driver Dynamic Linking
 
