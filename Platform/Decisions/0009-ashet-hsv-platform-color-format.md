@@ -6,6 +6,8 @@
 
 Use **Ashet HSV** throughout the Ashet Platform as the standard 8-bit color representation unless a specification explicitly requires another format.
 
+The normative encoding is specified in [Ashet HSV.md](../Ashet%20HSV.md). Its development history and palette experiments are documented separately in [Lore/Ashet HSV.md](../../Lore/Ashet%20HSV.md).
+
 ## Rationale
 
 Ashet HSV provides a surprisingly effective representation for many different color-use cases while fitting every color into a single byte.
