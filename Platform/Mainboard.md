@@ -19,8 +19,8 @@ Signal names prefixed with `/` are active-low.
 
 | Signal | Semantics |
 | --- | --- |
-| `I2C_SCL` | System I²C bus clock lane. 3.3 V, open collector. Connected only to the PCA9547 on the Backplane. |
-| `I2C_SDA` | System I²C bus data lane. 3.3 V, open collector. Connected only to the PCA9547 on the Backplane. |
+| `I2C_SCL` | System I²C bus clock lane. 3.3 V, open collector. |
+| `I2C_SDA` | System I²C bus data lane. 3.3 V, open collector. |
 | `/FAB_RESET` | Fabric reset and Mainboard mode-detection lane. Resets the Southbridge. The Mainboard does not provide a bias resistor; the Backplane biases A8 according to the Slot role. |
 | `/RESET` | System reset signal. Open collector. Defaults to 3.3 V. A power-on reset is generated on system power-up. |
 | `/PRESENT` | Presence indication. The Mainboard must connect this signal to GND through 0 Ω, identical to an Expansion Card. |
@@ -29,6 +29,8 @@ Signal names prefixed with `/` are active-low.
 | `/SLOT_HS` | Connected to GND on the Backplane when the Backplane provides the High-Speed bus. |
 | `/SLOT_USB0` | Connected to GND on the Backplane when the Backplane uses the USB0 bus. |
 | `/SLOT_USB1` | Connected to GND on the Backplane when the Backplane uses the USB1 bus. |
+
+The Mainboard-facing `I2C_SCL` and `I2C_SDA` pins are connected directly to the PCA9547 on the Backplane. The PCA9547 uses I²C address `0x77`.
 
 ## Startup Mode Selection
 
