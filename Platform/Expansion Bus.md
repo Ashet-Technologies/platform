@@ -154,13 +154,11 @@ From the Expansion Card's point of view, this is a complete I²C bus. The platfo
 | Address | Use                     |
 | ------: | ----------------------- |
 |    0x57 | Metadata EEPROM         |
-|    0x77 | PCA9547 I²C multiplexer |
+|    0x77 | Reserved by the Platform |
 
 All other I²C addresses are available to the Expansion Card and will not be occupied by the platform.
 
 Each Expansion Card must provide a metadata EEPROM at address `0x57`. The EEPROM must provide at least 4 KiB of storage. Cards that embed an icon block must use at least an 8 KiB EEPROM. The EEPROM contains the Expansion Card metadata and may contain a card-specific low-level driver.
-
-The PCA9547 is physically on the Backplane; the Mainboard controls it to select the I²C bus segment belonging to a particular Expansion Slot. Its control address is `0x77`.
 
 The architectural rationale for the per-slot I²C topology and the selected reserved addresses is documented in [Decisions](Decisions/).
 
