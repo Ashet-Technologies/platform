@@ -78,13 +78,12 @@ If that happens, the first word executes as an unusual endless loop instead of a
 
 ### Version
 
-The only metadata version currently defined is:
+The metadata version defined by this specification is:
 
 ```
 Version = 1
 ```
 
-Compatibility behavior for versions other than 1 is not yet specified.
 
 ## Properties
 
@@ -104,9 +103,9 @@ Compatibility behavior for versions other than 1 is not yet specified.
 
 `Driver Interface` is a 32-bit identifier for a platform-standard low-level driver interface.
 
-A card that does not embed card-specific firmware may use this field to select a standard driver interface instead. Standard driver-interface identifiers and their behavior are not yet specified.
+A card that does not embed card-specific firmware may use this field to select a standard driver interface instead.
 
-The value `0` is currently named `none`.
+The value `0` is named `none`.
 
 ## High-Speed Profile
 
@@ -175,7 +174,7 @@ When `Has Firmware` is set, this block contains the card-specific Propeller 2 Lo
 
 GP lane policy is defined by this Low-Level-Driver rather than by separate per-pin metadata fields.
 
-When `Has Firmware` is clear, the block is ignored and the card may use a platform-standard `Driver Interface` instead. Standard driver interfaces are not yet specified.
+When `Has Firmware` is clear, the block is ignored and the card may use a platform-standard `Driver Interface` instead.
 
 ## Optional Icon Block
 
