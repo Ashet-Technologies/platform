@@ -166,7 +166,7 @@ Goal: provide deterministic audio synchronization between multiple Expansion Car
 
 ### Activation Sequence Diagram
 
-Add a Mermaid diagram for the Expansion Card activation sequence: assert reset, read/validate EEPROM from the always-on identity domain, enable switched power, optional clock setup, optional HSTX setup, optional Audio setup, Low-Level-Driver loading, Expansion Card Driver loading, then reset release.
+Add a Mermaid diagram for the Expansion Card activation sequence: assert reset, enable the separately switched identity rail, read/validate EEPROM while main slot power is off, enable switched power, optional clock setup, optional HSTX setup, optional Audio setup, Low-Level-Driver loading, Expansion Card Driver loading, then reset release.
 
 ### Standard Interface Terminology
 
