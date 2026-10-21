@@ -10,7 +10,7 @@ The Expansion Bus provides three switched power rails to every Expansion Card:
 - 5 V at up to 500 mA
 - 12 V at up to 500 mA
 
-The Expansion Bus additionally provides an independent, always-on 3.3 V identity rail (`+3V3_ID`) with a 25 mA current limit, used for Expansion Card EEPROM discovery even while the three switched rails are disabled.
+The Expansion Bus additionally provides an independently switched 3.3 V identity rail (`+3V3_ID`) with a 20 mA current limit, used for Expansion Card EEPROM discovery even while the three switched rails are disabled.
 
 The 12 V rail exists to support higher-power Expansion Cards that cannot be served reasonably by only the 3.3 V and 5 V rails.
 
@@ -28,6 +28,6 @@ Earlier designs allowed more current per rail. The present limits were reduced b
 
 - Expansion Cards may rely on 3.3 V, 5 V, and 12 V being available.
 - Each switched rail is limited to 500 mA per Expansion Card.
-- `+3V3_ID` is separately limited to 25 mA, independent of the switched rails.
+- `+3V3_ID` is separately limited to 20 mA, independent of the switched rails.
 - The Backplane power-distribution design must account for approximately 4 A per rail at full system scale.
 - Detailed rail tolerances, sequencing, inrush, protection behavior, and hot-swap behavior remain separate electrical-specification topics.
