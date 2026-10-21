@@ -263,7 +263,7 @@ At interface level, slot activation proceeds in this order:
 4. Enable the three switched slot power rails.
 5. If `Requires Clock` is set, enable `CLK` and wait until it is stable.
 6. If requested and supported, enable and configure the HSTX interface.
-6. If requested and supported, enable and configure the Audio lanes.
+7. If requested and supported, enable and configure the Audio lanes.
 8. Determine and load the Low-Level-Driver.
 9. Load the Expansion Card Driver on the Mainboard.
 10. Release `/RESET`.
