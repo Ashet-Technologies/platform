@@ -127,7 +127,7 @@ Goals include:
 
 ### Backplane I²C Subnet
 
-The PCA9547 provides eight downstream I²C channels. Seven channels are assigned one-to-one to the seven Expansion Slots. The eighth channel forms the Backplane-local system-management I²C subnet.
+The TCA9548A provides eight downstream I²C channels. Seven channels are assigned one-to-one to the seven Expansion Slots. The eighth channel forms the Backplane-local system-management I²C subnet.
 
 Still to define:
 
