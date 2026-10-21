@@ -9,6 +9,7 @@ The Ashet *Expansion Bus* is the core component of the composability of the Ashe
   - 12 V, 500 mA
   - 5 V, 500 mA
   - 3.3 V, 500 mA
+  - Separately switched 3.3 V identity supply, 20 mA
   - Overcurrent Protection
 - I²C Bus, up to 400 kHz
 - 8 Programmable I/O Pins, up to 300 MHz
@@ -49,8 +50,9 @@ Unless specified otherwise, signal voltages are referenced to GND and must remai
 
 | Signal Name     | Driver    | Type   | Level | Count | Function                                                                    | Frequency Limit |
 | --------------- | --------- | ------ | ----- | ----: | --------------------------------------------------------------------------- | --------------- |
-| `GND`           | Backplane | Power  | 0 V   |    20 | Signal Ground                                                               | -               |
+| `GND`           | Backplane | Power  | 0 V   |    19 | Signal Ground                                                               | -               |
 | `+3V3`          | Backplane | Power  | 3.3 V |     2 | 3.3 V, 500 mA Power Supply                                                  | -               |
+| `+3V3_ID`       | Backplane | Power  | 3.3 V |     1 | Separately switched identity supply, current-limited to 20 mA                         | -               |
 | `+5V`           | Backplane | Power  | 5 V   |     2 | 5 V, 500 mA Power Supply                                                    | -               |
 | `+12V`          | Backplane | Power  | 12 V  |     2 | 12 V, 500 mA Power Supply                                                   | -               |
 | `/PRESENT`      | Card      | Static | 0 V   |     1 | Presence detection. Must be tied to GND through 0 Ω on the Expansion Card   | -               |
@@ -94,17 +96,19 @@ All signals that are not power signals use nominal voltage levels between 0.0 V 
 
 ### Power
 
-The Expansion Bus defines 3.3 V, 5 V and 12 V supplies at 500 mA each.
+The Expansion Bus defines three switched supplies (3.3 V, 5 V and 12 V) at 500 mA each, plus a separately switched `+3V3_ID` identity supply at 3.3 V with a 20 mA current limit.
+
+`+3V3_ID` is independently switched for each Expansion Slot. It may be enabled while all three main slot rails are disabled and may also be disabled independently. It is intended to power the Expansion Card metadata EEPROM and its I²C pull-ups, not the card's general circuitry.
 
 The 500 mA limit applies to the complete rail for one slot and is shared across all connector contacts carrying that rail.
 
 For a slot, the three rails are switched synchronously: 3.3 V, 5 V and 12 V are either all enabled or all disabled.
 
-Each rail is protected by an eFuse. The specific eFuse implementation is outside the Platform interface.
+Each switched rail is protected by an eFuse. The specific eFuse implementation is outside the Platform interface. The `+3V3_ID` supply must be current-limited to 20 mA.
 
-An Expansion Card must not back-power an unpowered slot through a power rail or signal.
+An Expansion Card must not back-power an unpowered slot through a power rail or signal. The identity domain must not back-power any disabled switched rail or other card circuitry.
 
-When slot power is disabled, card-facing signals should be high-impedance and the card should not rely on host-side bias being present.
+When the three switched slot rails are disabled, card-facing signals other than `I2C_SCL` and `I2C_SDA` should be high-impedance and the card should not rely on host-side bias being present. The identity I²C bus and its EEPROM are operable when `+3V3_ID` is enabled; they are unpowered when `+3V3_ID` is disabled.
 
 
 Host-side biasing of `/PRESENT` is not part of the Expansion Card electrical contract.
@@ -146,7 +150,9 @@ If `Requires Clock` is clear, the clock may remain muted for that slot.
 
 Each Expansion Slot provides its own I²C bus segment. The nominal bus speed is 100 kHz; a card may support operation up to 400 kHz.
 
-`I2C_SCL` and `I2C_SDA` use open-drain signaling in the 3.3 V domain. Pull-ups are provided by the Backplane and are present only while the slot is powered.
+`I2C_SCL` and `I2C_SDA` use open-drain signaling in the 3.3 V identity domain. The Backplane must not provide pull-ups or other biasing on either signal. Every Expansion Card must provide pull-ups from both signals to `+3V3_ID` sufficient for reliable communication with its metadata EEPROM, when `+3V3_ID` is enabled, including while the main switched rails are off.
+
+Additional devices on the card may share the I²C bus, provided their connections cannot back-power circuitry supplied by the switched rails through either I²C signal or `+3V3_ID`. Devices using other voltage domains require appropriate isolation or level translation.
 
 From the Expansion Card's point of view, this is a complete I²C bus. The platform reserves only the following addresses in addition to addresses reserved by the I²C specification itself:
 
@@ -157,7 +163,7 @@ From the Expansion Card's point of view, this is a complete I²C bus. The platfo
 
 All other I²C addresses are available to the Expansion Card and will not be occupied by the platform.
 
-Each Expansion Card must provide a metadata EEPROM at address `0x57`. The EEPROM must provide at least 4 KiB of storage. Cards that embed an icon block must use at least an 8 KiB EEPROM. The EEPROM contains the Expansion Card metadata and may contain a card-specific low-level driver.
+Each Expansion Card must power its metadata EEPROM from `+3V3_ID` and provide it at address `0x57`. The EEPROM must provide at least 4 KiB of storage. Cards that embed an icon block must use at least an 8 KiB EEPROM. The EEPROM contains the Expansion Card metadata and may contain a card-specific low-level driver.
 
 The architectural rationale for the per-slot I²C topology and the selected reserved addresses is documented in [Decisions](Decisions/).
 
@@ -252,14 +258,15 @@ The Platform defines the following standard interface classes:
 At interface level, slot activation proceeds in this order:
 
 1. Assert `/RESET`.
-2. Enable the slot power rails.
-3. Read and validate the Expansion Card EEPROM data.
-4. If `Requires Clock` is set, enable `CLK` and wait until it is stable.
-5. If requested and supported, enable and configure the HSTX interface.
-6. If requested and supported, enable and configure the Audio lanes.
-7. Determine and load the Low-Level-Driver.
-8. Load the Expansion Card Driver on the Mainboard.
-9. Release `/RESET`.
+2. Enable `+3V3_ID` for the Expansion Slot.
+3. Read and validate the Expansion Card EEPROM data while the three main switched rails are disabled.
+4. Enable the three switched slot power rails.
+5. If `Requires Clock` is set, enable `CLK` and wait until it is stable.
+6. If requested and supported, enable and configure the HSTX interface.
+7. If requested and supported, enable and configure the Audio lanes.
+8. Determine and load the Low-Level-Driver.
+9. Load the Expansion Card Driver on the Mainboard.
+10. Release `/RESET`.
 
 `/RESET` must remain asserted for at least 50 ms after slot power-on. The Expansion Card Driver remains authoritative for runtime HSTX configuration.
 
@@ -279,7 +286,7 @@ This table defines the Expansion Card-facing pinout. See [Pinout.md](Pinout.md) 
 |   2 | +12V         | +12V          |
 |   3 | +5V          | +5V           |
 |   4 | +3V3         | +3V3          |
-|   5 | GND          | GND           |
+|   5 | +3V3_ID      | GND           |
 |   6 | I2C_SCL      | /SLOT_AUDIO   |
 |   7 | I2C_SDA      | /SLOT_HS   |
 |   8 | +3V3 10K     | /SLOT_FUNC0   |

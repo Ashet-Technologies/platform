@@ -127,7 +127,7 @@ Goals include:
 
 ### Backplane I²C Subnet
 
-The PCA9547 provides eight downstream I²C channels. Seven channels are assigned one-to-one to the seven Expansion Slots. The eighth channel forms the Backplane-local system-management I²C subnet.
+The TCA9548A provides eight downstream I²C channels. Seven channels are assigned one-to-one to the seven Expansion Slots. The eighth channel forms the Backplane-local system-management I²C subnet.
 
 Still to define:
 
@@ -166,7 +166,7 @@ Goal: provide deterministic audio synchronization between multiple Expansion Car
 
 ### Activation Sequence Diagram
 
-Add a Mermaid diagram for the Expansion Card activation sequence: assert reset, power on, read/validate EEPROM, optional clock setup, optional HSTX setup, optional Audio setup, Low-Level-Driver loading, Expansion Card Driver loading, then reset release.
+Add a Mermaid diagram for the Expansion Card activation sequence: assert reset, enable the separately switched identity rail, read/validate EEPROM while main slot power is off, enable switched power, optional clock setup, optional HSTX setup, optional Audio setup, Low-Level-Driver loading, Expansion Card Driver loading, then reset release.
 
 ### Standard Interface Terminology
 

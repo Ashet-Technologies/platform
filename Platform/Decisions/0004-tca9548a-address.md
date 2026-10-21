@@ -1,10 +1,10 @@
-# 0004 — PCA9547 Address 0x77
+# 0004 — TCA9548A Address 0x77
 
 **Status:** Accepted
 
 ## Decision
 
-The PCA9547 I²C multiplexer uses address **0x77**.
+The TCA9548A I²C multiplexer uses address **0x77**.
 
 ## Rationale
 
@@ -18,4 +18,4 @@ Using `0x77` therefore reduces the likelihood of conflicts and simplifies Expans
 
 - `0x77` is reserved by the platform.
 - Expansion Cards must not use `0x77`.
-- The host uses `0x77` to control the PCA9547 and select an Expansion Card I²C segment.
+- The host uses `0x77` to control the TCA9548A and enable an Expansion Card I²C segment.

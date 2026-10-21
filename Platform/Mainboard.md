@@ -14,6 +14,7 @@ Signal names prefixed with `/` are active-low.
 | `+12V` | 12 V power rail, up to 500 mA. |
 | `+5V` | 5 V power rail, up to 500 mA. |
 | `+3V3` | 3.3 V power rail, up to 500 mA. |
+| `+3V3_ID` | On the Mainboard Slot, an alias of the always-powered Mainboard `+3V3` rail. |
 
 ## Management and Control
 
@@ -30,7 +31,7 @@ Signal names prefixed with `/` are active-low.
 | `/SLOT_USB0` | Connected to GND on the Backplane when the Backplane uses the USB0 bus. |
 | `/SLOT_USB1` | Connected to GND on the Backplane when the Backplane uses the USB1 bus. |
 
-The Mainboard-facing `I2C_SCL` and `I2C_SDA` pins are connected directly to the PCA9547 on the Backplane. The PCA9547 uses I²C address `0x77`.
+The Mainboard-facing `I2C_SCL` and `I2C_SDA` pins are connected directly to the TCA9548A on the Backplane. The TCA9548A uses I²C address `0x77`.
 
 ## Startup Mode Selection
 
@@ -64,6 +65,8 @@ After detecting `/FAB_RESET` HIGH, a Mainboard entering Not-so-mainboard mode mu
 - `I2S_*`
 
 To the host, a Mainboard operating in Not-so-mainboard mode is indistinguishable from a regular Expansion Card.
+
+A Mainboard supporting this mode must not directly join A5 (`+3V3_ID`) to its general `+3V3` rail when installed in an Expansion Slot. It may leave A5 unconnected or use `+3V3_ID` exclusively to power the identity provider (including any circuitry necessary to emulate the metadata EEPROM) without back-powering its switched supply domain. Its identity provider must be accessible when `+3V3_ID` is enabled, even while the three main switched slot rails are disabled.
 
 The Mainboard must switch its I²C interface into device mode and emulate the Expansion Card metadata EEPROM at address `0x57`, using the format defined in [Expansion Card EEPROM.md](Expansion%20Card%20EEPROM.md).
 
