@@ -45,7 +45,7 @@ The Mainboard-facing signal semantics are defined in [Mainboard.md](Mainboard.md
 
 ## Notes
 
-- A5 provides `+3V3_ID` on both connector mappings. In an Expansion Slot it is a separate always-on, 25 mA-limited identity supply; in the Mainboard Slot it aliases the Mainboard `+3V3` supply. See [Expansion Bus.md](Expansion%20Bus.md) and [Mainboard.md](Mainboard.md).
+- A5 provides `+3V3_ID` on both connector mappings. In an Expansion Slot it is a separately switched, 20 mA-limited identity supply; in the Mainboard Slot it aliases the Mainboard `+3V3` supply. See [Expansion Bus.md](Expansion%20Bus.md) and [Mainboard.md](Mainboard.md).
 
 - `/FAB_RESET`, `/SLOT_USB0`, `/SLOT_USB1`, `USB0_D+`, `USB0_D-`, `USB1_D+`, and `USB1_D-` are present only in the Mainboard-facing mapping and are not part of the generic Expansion Bus signal specification.
 - In the Mainboard-facing mapping, `/FAB_RESET` is pulled down by the Mainboard Slot with 10 kΩ. In the Expansion Card-facing mapping, the corresponding A8 pin is always pulled up to `+3V3` with 10 kΩ.
