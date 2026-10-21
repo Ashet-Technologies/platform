@@ -31,7 +31,7 @@ Signal names prefixed with `/` are active-low.
 | `/SLOT_USB0` | Connected to GND on the Backplane when the Backplane uses the USB0 bus. |
 | `/SLOT_USB1` | Connected to GND on the Backplane when the Backplane uses the USB1 bus. |
 
-The Mainboard-facing `I2C_SCL` and `I2C_SDA` pins are connected directly to the PCA9547 on the Backplane. The PCA9547 uses I²C address `0x77`.
+The Mainboard-facing `I2C_SCL` and `I2C_SDA` pins are connected directly to the TCA9548A on the Backplane. The TCA9548A uses I²C address `0x77`.
 
 ## Startup Mode Selection
 
