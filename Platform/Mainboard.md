@@ -66,7 +66,7 @@ After detecting `/FAB_RESET` HIGH, a Mainboard entering Not-so-mainboard mode mu
 
 To the host, a Mainboard operating in Not-so-mainboard mode is indistinguishable from a regular Expansion Card.
 
-A Mainboard supporting this mode must not directly join A5 (`+3V3_ID`) to its general `+3V3` rail when installed in an Expansion Slot. It may leave A5 unconnected or use `+3V3_ID` exclusively to power the identity provider (including any circuitry necessary to emulate the metadata EEPROM) without back-powering its switched supply domain. Its identity provider must remain accessible while the switched slot rails are disabled.
+A Mainboard supporting this mode must not directly join A5 (`+3V3_ID`) to its general `+3V3` rail when installed in an Expansion Slot. It may leave A5 unconnected or use `+3V3_ID` exclusively to power the identity provider (including any circuitry necessary to emulate the metadata EEPROM) without back-powering its switched supply domain. Its identity provider must be accessible when `+3V3_ID` is enabled, even while the three main switched slot rails are disabled.
 
 The Mainboard must switch its I²C interface into device mode and emulate the Expansion Card metadata EEPROM at address `0x57`, using the format defined in [Expansion Card EEPROM.md](Expansion%20Card%20EEPROM.md).
 
