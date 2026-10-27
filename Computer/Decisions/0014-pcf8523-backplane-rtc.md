@@ -1,6 +1,6 @@
 # 0014 — PCF8523 Backplane RTC
 
-**Status:** Accepted
+**Status:** Superseded by [0017 — PCF85063A Backplane RTC](0017-pcf85063a-backplane-rtc.md)
 
 ## Decision
 
