@@ -10,7 +10,7 @@ The Ashet *Expansion Bus* is the core component of the composability of the Ashe
   - 5 V, 500 mA
   - 3.3 V, 500 mA
   - Separately switched 3.3 V identity supply, 20 mA
-  - Overcurrent Protection
+  - Protection against faulty cards recommended (not required)
 - I²C Bus, up to 400 kHz
 - 8 Programmable I/O Pins, up to 300 MHz
 - 8 High Speed Lanes, up to 300 MHz
@@ -51,10 +51,10 @@ Unless specified otherwise, signal voltages are referenced to GND and must remai
 | Signal Name     | Driver    | Type   | Level | Count | Function                                                                    | Frequency Limit |
 | --------------- | --------- | ------ | ----- | ----: | --------------------------------------------------------------------------- | --------------- |
 | `GND`           | Backplane | Power  | 0 V   |    19 | Signal Ground                                                               | -               |
-| `+3V3`          | Backplane | Power  | 3.3 V |     2 | 3.3 V, 500 mA Power Supply                                                  | -               |
-| `+3V3_ID`       | Backplane | Power  | 3.3 V |     1 | Separately switched identity supply, current-limited to 20 mA                         | -               |
-| `+5V`           | Backplane | Power  | 5 V   |     2 | 5 V, 500 mA Power Supply                                                    | -               |
-| `+12V`          | Backplane | Power  | 12 V  |     2 | 12 V, 500 mA Power Supply                                                   | -               |
+| `+3V3`          | Backplane | Power  | 3.3 V |     2 | 3.3 V supply; card draw ≤ 500 mA                                                  | -               |
+| `+3V3_ID`       | Backplane | Power  | 3.3 V |     1 | Separately switched identity supply; card draw ≤ 20 mA                         | -               |
+| `+5V`           | Backplane | Power  | 5 V   |     2 | 5 V supply; card draw ≤ 500 mA                                                    | -               |
+| `+12V`          | Backplane | Power  | 12 V  |     2 | 12 V supply; card draw ≤ 500 mA                                                   | -               |
 | `/PRESENT`      | Card      | Static | 0 V   |     1 | Presence detection. Must be tied to GND through 0 Ω on the Expansion Card   | -               |
 | `/SLOT_AUDIO`   | Backplane | Static | 0 V   |     1 | Connected to GND if the slot has the *Audio* feature available               | -               |
 | `/SLOT_HS`      | Backplane | Static | 0 V   |     1 | Connected to GND if the slot has the *High-Speed* feature available          | -               |
@@ -96,15 +96,15 @@ All signals that are not power signals use nominal voltage levels between 0.0 V 
 
 ### Power
 
-The Expansion Bus defines three switched supplies (3.3 V, 5 V and 12 V) at 500 mA each, plus a separately switched `+3V3_ID` identity supply at 3.3 V with a 20 mA current limit.
+The Expansion Bus defines three switched supplies (`+3V3`, `+5V`, and `+12V`) and a separately switched 3.3 V identity supply (`+3V3_ID`). An Expansion Card must not draw more than 500 mA from any one of the three main rails or more than 20 mA from `+3V3_ID`.
 
 `+3V3_ID` is independently switched for each Expansion Slot. It may be enabled while all three main slot rails are disabled and may also be disabled independently. It is intended to power the Expansion Card metadata EEPROM and its I²C pull-ups, not the card's general circuitry.
 
-The 500 mA limit applies to the complete rail for one slot and is shared across all connector contacts carrying that rail.
+Each maximum permitted current draw applies to the complete rail for one slot, across all connector contacts carrying that rail.
 
 For a slot, the three rails are switched synchronously: 3.3 V, 5 V and 12 V are either all enabled or all disabled.
 
-Each switched rail is protected by an eFuse. The specific eFuse implementation is outside the Platform interface. The `+3V3_ID` supply must be current-limited to 20 mA.
+These limits constrain Expansion Card current consumption; they do not guarantee hardware-enforced current limiting or fault interruption. The Platform does not require an eFuse, PTC, current limiter, or other protective measure on any rail, including `+3V3_ID`. Protection against faulty cards is recommended, but the choice and behavior of protection circuitry are implementation-specific.
 
 An Expansion Card must not back-power an unpowered slot through a power rail or signal. The identity domain must not back-power any disabled switched rail or other card circuitry.
 
